@@ -1,0 +1,125 @@
+digraph G {
+bgcolor=transparent;
+compound=True;
+label="Deterload Dependency Graph";
+splines=line;
+node [shape=box];
+edge [color="#00000044"];
+node [margin=0];
+subgraph cluster_builder {
+bgcolor="#F5F5F5";
+label=builder;
+pencolor="#666666";
+penwidth=2;
+cluster_builder_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_imgBuilder {
+bgcolor="#CCE5FF";
+label=imgBuilder;
+pencolor="#666666";
+penwidth=2;
+cluster_imgBuilder_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_gcpt {
+bgcolor="#DAE8FC";
+label=gcpt;
+pencolor="#6C8EBF";
+penwidth=3;
+cluster_gcpt_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_opensbi {
+label=opensbi;
+penwidth=2;
+cluster_opensbi_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_opensbidts [label=dts];
+"cluster_opensbicommon-build" [label="common-build"];
+cluster_opensbidts -> "cluster_opensbicommon-build"  [constraint=False];
+subgraph cluster_linux {
+label=linux;
+penwidth=2;
+cluster_linux_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_initramfs {
+label=initramfs;
+penwidth=2;
+cluster_initramfs_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_base {
+label=base;
+penwidth=2;
+cluster_base_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_basegen_init_cpio [label=gen_init_cpio];
+cluster_basecpio_list [label=cpio_list];
+}
+
+subgraph cluster_overlays {
+label=overlays;
+penwidth=2;
+cluster_overlays_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_overlaysbefore_workload [label=before_workload];
+cluster_overlaysqemu_trap [label=qemu_trap];
+cluster_overlaysnemu_trap [label=nemu_trap];
+cluster_overlaysinittab [label=inittab];
+cluster_overlaysrun_sh [label="run.sh"];
+}
+
+}
+
+"cluster_linuxcommon-build" [label="common-build"];
+}
+
+}
+
+}
+
+}
+
+subgraph cluster_cptBuilder {
+bgcolor="#F8CECC";
+label=cptBuilder;
+pencolor="#B85450";
+penwidth=2;
+cluster_cptBuilder_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_cptBuilderqemu [label=qemu];
+cluster_cptBuildernemu [label=nemu];
+cluster_cptBuilderstage1_profiling [label=stage1_profiling];
+cluster_cptBuildersimpoint [label=simpoint];
+cluster_cptBuilderstage2_cluster [label=stage2_cluster];
+cluster_cptBuilderstage3_checkpoint [label=stage3_checkpoint];
+cluster_cptBuilderqemu -> cluster_cptBuilderstage1_profiling;
+cluster_cptBuildernemu -> cluster_cptBuilderstage1_profiling;
+cluster_cptBuildersimpoint -> cluster_cptBuilderstage2_cluster;
+cluster_cptBuilderstage1_profiling -> cluster_cptBuilderstage2_cluster;
+cluster_cptBuilderqemu -> cluster_cptBuilderstage3_checkpoint;
+cluster_cptBuildernemu -> cluster_cptBuilderstage3_checkpoint;
+cluster_cptBuilderstage2_cluster -> cluster_cptBuilderstage3_checkpoint;
+}
+
+cluster_gcpt_connect_node_ -> cluster_cptBuilderstage1_profiling  [color="#6C8EBF", ltail=cluster_gcpt, penwidth=3];
+cluster_gcpt_connect_node_ -> cluster_cptBuilderstage3_checkpoint  [color="#6C8EBF", ltail=cluster_gcpt, penwidth=3];
+}
+
+subgraph cluster_inputs {
+label="";
+pencolor=transparent;
+penwidth=2;
+cluster_inputs_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_benchmark {
+bgcolor="#D5E8D4";
+label=benchmark;
+pencolor="#82B366";
+penwidth=2;
+cluster_benchmark_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_benchmarkrun [label=run];
+}
+
+}
+
+subgraph cluster_outputs {
+label="";
+pencolor=transparent;
+penwidth=2;
+cluster_outputs_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_cptBuilderstage3_checkpoint -> Gcheckpoints;
+}
+
+cluster_benchmarkrun -> cluster_overlaysrun_sh;
+cluster_benchmark_connect_node_ -> cluster_initramfs_connect_node_  [color="#82B366", lhead=cluster_initramfs, ltail=cluster_benchmark, penwidth=2];
+Gcheckpoints [color="#D79B00", fillcolor="#FFE6CC", label=checkpoints, penwidth=2, style=filled];
+cluster_imgBuilder_connect_node_ -> cluster_cptBuilderqemu  [color=transparent, ltail=cluster_imgBuilder, penwidth=2];
+}

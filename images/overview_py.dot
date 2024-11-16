@@ -1,0 +1,22 @@
+digraph G {
+bgcolor=transparent;
+compound=True;
+label="Deterload\nWorkflow Overview";
+node [shape=box];
+edge [color="#00000044"];
+Gbenchmark [color="#82B366", fillcolor="#D5E8D4", label=benchmark, style=filled];
+subgraph cluster_builder {
+bgcolor="#F5F5F5";
+label=builder;
+pencolor="#666666";
+penwidth=2;
+cluster_builder_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_builderimgBuilder [color="#6C8EBF", fillcolor="#DAE8FC", label=imgBuilder, style=filled];
+cluster_buildercptBuilder [color="#B85450", fillcolor="#F8CECC", label=cptBuilder, style=filled];
+cluster_builderimgBuilder -> cluster_buildercptBuilder  [color="#6C8EBF"];
+}
+
+Gbenchmark -> cluster_builderimgBuilder  [color="#82B366"];
+Gcheckpoints [color="#D79B00", fillcolor="#FFE6CC", label=checkpoints, style=filled];
+cluster_buildercptBuilder -> Gcheckpoints  [color="#B85450"];
+}
