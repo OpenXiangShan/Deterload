@@ -5,7 +5,7 @@ EXTRACTMDs=docs/reference/default_extract.md
 doc: $(shell find . -name "*.md") ${PYSVGs} ${EXTRACTMDs}
 	mdbook build
 
-%_py.dot: %_dot.py docs/builders/images/common.py
+%_py.dot: %_dot.py docs/designs/builders/images/common.py
 	python3 $<
 %.svg: %.dot
 	dot -Tsvg $< -o $@

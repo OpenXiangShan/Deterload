@@ -1,4 +1,4 @@
-# 🧾配置（Configurations）
+# 🧾配置系统（Configuration System）
 
 TODO:
 
