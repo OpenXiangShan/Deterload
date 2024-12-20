@@ -1,11 +1,15 @@
 .NOTINTERMEDIATE:
 
 PYSVGs=$(subst _dot.py,_py.svg,$(shell find docs/ -name "*_dot.py"))
-EXTRACTMDs=docs/reference/default_extract.md
-doc: $(shell find . -name "*.md") ${PYSVGs} ${EXTRACTMDs}
+EXTRACTMKDs=docs/references/default_extract.mkd
+MDs=$(shell find . -name "*.md")
+doc: ${MDs} docs/SUMMARY.md ${PYSVGs} ${EXTRACTMKDs}
 	mdbook build
 
-%_py.dot: %_dot.py docs/designs/builders/images/common.py
+docs/SUMMARY.md: ./docs/generate_summary.py $(filter-out %SUMMARY.md,${MDs})
+	$< $(dir $<) > $@
+
+%_py.dot: %_dot.py docs/designs/4.builders/images/common.py
 	python3 $<
 %.svg: %.dot
 	dot -Tsvg $< -o $@
@@ -13,5 +17,5 @@ doc: $(shell find . -name "*.md") ${PYSVGs} ${EXTRACTMDs}
 	# https://developer.mozilla.org/en-US/docs/Glossary/Intrinsic_Size
 	sed -i 's/\([0-9]\+\)pt/\1px/g' $@
 
-docs/reference/default_extract.md: ./docs/extract_comments.py default.nix
+docs/references/default_extract.mkd: ./docs/extract_comments.py default.nix
 	$^ $@

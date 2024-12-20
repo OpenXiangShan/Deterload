@@ -11,4 +11,5 @@ book
 *_py.dot
 *_py.svg
 __pycache__
-*extract.md
+*.mkd
+docs/SUMMARY.md
