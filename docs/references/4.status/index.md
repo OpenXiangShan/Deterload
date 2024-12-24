@@ -1,6 +1,6 @@
-# 📊输出（Outputs）
+# 构建状态（Build Status）
 
-下面的表格展示了Deterload的构建结果，具体说明如下：
+下面的表格展示构建出工作负载的状态，具体说明如下：
 
 * `Date`行表示构建开始的时间，格式为年月日时分秒(yymmddhhmmss)。
   各列按照`Date`降序排列（最新排最前面）。
@@ -10,7 +10,7 @@
   每个单元格都用颜色标记，不同的颜色表示不同的哈希值。
   通过这种颜色标记，可以轻松看出多次构建之间是否保持了**确定性**。
 
-The tables below demonstrate the build results of Deterload, with the following details:
+The tables below demonstrate the status of built workloads, with the following details:
 
 * The `Date` row indicates the build start time in yymmddhhmmss format.
   Columns are sorted by `Date` in descending order (most recent first).

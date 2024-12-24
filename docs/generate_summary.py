@@ -24,21 +24,21 @@ def generate_section_body(root_dir:str, sub_dir:str) -> list[str]:
 
 print("# Summary")
 print("")
-print("# 入门（Get Started）")
+print("# 🏠入门（Get Started）")
 print("")
-print("* [🏠README.md](./index.md)")
+print("* [README.md](./index.md)")
 print("")
-print("# 使用（Usages）")
+print("# 📝使用（Usages）")
 print("")
 for line in generate_section_body(sys.argv[1], "usages/"):
   print(line)
 print("")
-print("# 设计（Designs）")
+print("# 🖊️设计（Designs）")
 print("")
 for line in generate_section_body(sys.argv[1], "designs/"):
   print(line)
 print("")
-print("# 参考（References）")
+print("# 🗂️参考（References）")
 print("")
 for line in generate_section_body(sys.argv[1], "references/"):
   print(line)
