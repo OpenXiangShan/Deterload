@@ -52,6 +52,10 @@ stdenv.mkDerivation {
   patches = [
     ./allow_get_icount_anytime.patch
   ];
+  # do not disable timer
+  postPatch = ''
+    sed -i 's/nemu_trap_count == 2/nemu_trap_count == 1/g' contrib/plugins/profiling.c
+  '';
 
   buildInputs = [
     python3

@@ -14,8 +14,12 @@ stdenv.mkDerivation rec {
     riscv64-cc
     riscv64-libc
   ];
+  # do not disable timer interrupts, so that we can run multithread workloads.
+  postPatch = ''
+    sed '/DISABLE_TIME_INTR/d' ${src} > ${name}.c
+  '';
   buildPhase = ''
-    riscv64-unknown-linux-gnu-gcc ${src} -o ${name} -static
+    riscv64-unknown-linux-gnu-gcc ${name}.c -o ${name} -static
   '';
   installPhase = ''
     mkdir -p $out/bin

@@ -37,16 +37,6 @@ in stdenv.mkDerivation {
     riscv64-jemalloc
   ];
 
-  prePatch = ''
-    # Delete the test.t subtestcase in spec2006 400.perlbench using test input.
-    # Details:
-    #   Due to the timer interrupt is disabled,
-    #   the testcase `sleep.t` in 400.perlbench's test input results in endless loop.
-    #   Related source code see:
-    #   * [profiling QEMU plugin](https://github.com/OpenXiangShan/qemu/blob/8758c375de12f09073614cad48f9956fe53b5aa7/contrib/plugins/profiling.c#L249)
-    #   * [before_workload](https://github.com/OpenXiangShan/riscv-rootfs/blob/03bdc9553ed9db132844b1e314485d465667eabd/apps/before_workload/before_workload.c#L15)
-    sed -i '/sleep.t/d' ./spec2006/benchspec/CPU2006/400.perlbench/data/test/input/test.pl
-  '';
   patches = [ ./483.xalancbmk.patch ];
 
   configurePhase = let
