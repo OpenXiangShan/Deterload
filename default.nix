@@ -120,12 +120,12 @@ arg::before {
 /**
 <arg>spec2006-march</arg>: Compiler's `-march` option for SPEC CPU 2006.
 * **Type**: string
-* **Default value**: "rv64gc${lib.optionalString enableVector "v"}_zba_zbb_zbc_zbs"
+* **Default value**: "rv64gc${lib.optionalString enableVector "v"}"
 * **Description**: The default value depends on `enableVector`:
-  * If `enableVector` is `true`, the default value is `"rv64gc_zba_zbb_zbc_zbs"`,
-  * If `enableVector` is `false`, the default value is `"rv64gcv_zba_zbb_zbc_zbs"`.
+  * If `enableVector` is `true`, the default value is `"rv64gc"`,
+  * If `enableVector` is `false`, the default value is `"rv64gcv"`.
 */
-, spec2006-march ? "rv64gc${lib.optionalString enableVector "v"}_zba_zbb_zbc_zbs"
+, spec2006-march ? "rv64gc${lib.optionalString enableVector "v"}"
 
 /**
 <arg>spec2006-testcase-filter</arg>: Function to filter SPEC CPU 2006 testcases.
