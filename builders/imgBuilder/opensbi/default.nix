@@ -1,12 +1,15 @@
 { stdenv
 , python3
+, enableOverlayFS ? true
+, fuse-overlayfs
+, vmTools
 
 , riscv64-cc
 , rmExt
 , linux
 , dts
 , common-build
-}@args: stdenv.mkDerivation {
+}@args: let overlayfsDisabled = stdenv.mkDerivation {
   name = "${rmExt linux.name}.opensbi";
 
   src = common-build;
@@ -55,7 +58,21 @@
   '';
 
   installPhase = ''
+    # runInLinuxVM will auto create dir $out
+    rm -rf $out
     cp build/platform/generic/firmware/fw_payload.bin $out
   '';
   passthru = args;
-}
+};
+overlayfsEnabled = vmTools.runInLinuxVM (overlayfsDisabled.overrideAttrs (old: {
+  unpackPhase = ''
+    mkdir workdir
+    mkdir upperdir
+    mkdir overlaydir
+    /run/modprobe fuse
+    ${fuse-overlayfs}/bin/fuse-overlayfs -o lowerdir=${old.src},workdir=workdir,upperdir=upperdir overlaydir
+    cd overlaydir
+  '';
+  memSize = 1024;
+}));
+in if enableOverlayFS then overlayfsEnabled else overlayfsDisabled
