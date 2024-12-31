@@ -16,7 +16,7 @@ let
     dir /tmp          755 0 0
     dir /usr          755 0 0
     dir /mnt          755 0 0
-    dir /usr/bin      755 0 0
+    slink /usr/bin /bin 755 0 0
     dir /usr/lib      755 0 0
     dir /usr/sbin     755 0 0
     dir /var          755 0 0
