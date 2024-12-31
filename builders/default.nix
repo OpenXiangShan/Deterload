@@ -49,9 +49,13 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
     inherit (self) dts linux;
     common-build = self.opensbi-common-build;
   };
-  gcpt = callPackage ./imgBuilder/gcpt {
+  gcpt_single_core = callPackage ./imgBuilder/gcpt/single_core.nix {
     inherit (self) opensbi;
   };
+  gcpt_dual_core = callPackage ./imgBuilder/gcpt/dual_core.nix {
+    inherit (self) opensbi;
+  };
+  gcpt = self.gcpt_single_core;
   img = callPackage ./imgBuilder {
     inherit (self) gcpt;
   };
