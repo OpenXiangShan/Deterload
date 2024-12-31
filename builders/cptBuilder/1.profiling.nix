@@ -1,5 +1,5 @@
 { runCommand
-, lib
+, rmExt
 
 , qemu
 , nemu
@@ -10,7 +10,7 @@
 , profiling_log
 }@args:
 let
-  name = "${lib.removeSuffix ".gcpt" img.name}.1_profiling";
+  name = "${rmExt img.name}.1_profiling";
 
   qemuCommand = [
     "${qemu}/bin/qemu-system-riscv64"
