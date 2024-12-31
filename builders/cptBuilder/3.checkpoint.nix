@@ -10,6 +10,7 @@
 , checkpoint_format
 , simulator
 , checkpoint_log
+, smp
 }@args:
 let
   qemuCommand = [
@@ -18,7 +19,7 @@ let
     "-M nemu,simpoint-path=${stage2-cluster},workload=.,cpt-interval=${intervals},output-base-dir=$out,config-name=${workload_name},checkpoint-mode=SimpointCheckpoint"
     "-nographic"
     "-m 8G"
-    "-smp 1"
+    "-smp ${smp}"
     "-cpu rv64,v=true,vlen=128,h=false,sv39=true,sv48=false,sv57=false,sv64=false"
     "-icount shift=0,align=off,sleep=off"
   ];

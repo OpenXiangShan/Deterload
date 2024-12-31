@@ -381,6 +381,7 @@ in raw.overrideScope (r-self: r-super: {
       intervals = cpt-intervals;
       simulator = cpt-simulator;
       profiling_log = "profiling.log";
+      smp = cores;
     };
     stage2-cluster = b-super.stage2-cluster.override {
       maxK = if (cpt-maxK-bmk ? "${getName benchmark}")
@@ -393,6 +394,7 @@ in raw.overrideScope (r-self: r-super: {
       simulator = cpt-simulator;
       checkpoint_format = cpt-format;
       checkpoint_log = "checkpoint.log";
+      smp = cores;
     };
   });
 
