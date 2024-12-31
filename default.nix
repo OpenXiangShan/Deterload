@@ -372,6 +372,7 @@ in raw.overrideScope (r-self: r-super: {
     initramfs_overlays = b-super.initramfs_overlays.override {
       trapCommand = "${cpt-simulator}_trap";
     };
+    dts = b-super.dts.override { inherit cores; };
     gcpt = if cores=="1" then b-super.gcpt_single_core
       else if cores=="2" then b-super.gcpt_dual_core
       else b-super.gcpt;

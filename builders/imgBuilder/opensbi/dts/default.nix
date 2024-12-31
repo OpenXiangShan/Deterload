@@ -1,6 +1,8 @@
 { stdenv
 , fetchFromGitHub
 , dtc
+
+, cores
 }:
 let
   name = "xiangshan.dtb";
@@ -16,9 +18,14 @@ in stdenv.mkDerivation {
   buildInputs = [
     dtc
   ];
-  buildPhase = ''
+  buildPhase = let
+    dtsFile = if cores=="1" then "system.dts"
+         else if cores=="2" then "fpga-dualcore-system.dts"
+         else if cores=="4" then "fpga-fourcore-system.dts"
+         else throw "dts only supports 1/2/4 cores";
+  in ''
     cd dts
-    dtc -O dtb -o ${name} system.dts
+    dtc -O dtb -o ${name} ${dtsFile}
   '';
   installPhase = ''
     mkdir -p $out
