@@ -33,6 +33,17 @@ arg::before {
 */
 , cc ? "gcc14"
 
+/**
+<arg>cores</args>: Number of cores.
+* **Type**: number-in-string
+* **Default value**: `"1"`
+* **Available values**: `"1"`, `"2"`.
+  ([LibCheckpoint](https://github.com/OpenXiangShan/LibCheckpoint) is still in development,
+  its stable configuration current only supports dual core)
+* **Note**: `cpt-simulator`: qemu supports multiple cores, however, nemu only supports single core.
+*/
+, cores ? "1"
+
 /** ## Benchmarks Configuration */
 
 /** ### Benchmarks Common Configuration */
@@ -242,7 +253,11 @@ arg::before {
 * **Default value**: `"qemu"`
 * **Available values**: `"qemu"`, `"nemu"`
 * **Note**:
-  Though nemu is faster than qemu, the current version of nemu is not deterministic.
+  Though nemu is faster than qemu,
+
+  * nemu does not support multiple cores,
+  * the current version of nemu is not deterministic.
+
   Therefore, qemu is chosen as the default simulator.
   For more information, refer to [OpenXiangShan/Deterload Issue #8: nemu is not deterministic](https://github.com/OpenXiangShan/Deterload/issues/8).
 */
@@ -258,11 +273,13 @@ arg::before {
 , cpt-format ? "zstd"
 }:
 assert pkgs.pkgsCross.riscv64 ? "${cc}Stdenv";
+assert lib.assertOneOf "cores" cores ["1" "2"];
+assert lib.assertMsg (cpt-simulator=="nemu" -> cores=="1") "nemu only supports single core";
 assert lib.assertOneOf "spec2006-size" spec2006-size ["ref" "train" "test"];
 assert lib.assertOneOf "openblas-target" openblas-target ["RISCV64_GENERIC" "RISCV64_ZVL128B" "RISCV64_ZVL256B"];
 assert lib.assertOneOf "cpt-simulator" cpt-simulator ["qemu" "nemu"];
 assert lib.assertOneOf "cpt-format" cpt-format ["gz" "zstd"];
-assert lib.assertMsg (cpt-simulator=="qemu" -> cpt-format=="zstd") "qemu only support cpt-format: zstd";
+assert lib.assertMsg (cpt-simulator=="qemu" -> cpt-format=="zstd") "qemu only supports cpt-format: zstd";
 let
   raw = import ./raw.nix { inherit pkgs; };
   getName = p: if (p?pname) then p.pname else p.name;
@@ -390,7 +407,7 @@ in raw.overrideScope (r-self: r-super: {
       (x: x.stage2-cluster.maxK!=cpt-maxK)
       (builtins.attrValues r-super.spec2006)
     ) "x"; in"maxK${cpt-maxK}${suffix}")
-    "1core"
+    "${cores}core"
     spec2006-extra-tag
   ]; in r-super.spec2006 // (wrap-l2 tag r-super.spec2006);
 
@@ -402,7 +419,7 @@ in raw.overrideScope (r-self: r-super: {
     cpt-simulator
     (metricPrefix cpt-intervals)
     "maxK${r-super.openblas.stage2-cluster.maxK}"
-    "1core"
+    "${cores}core"
     openblas-extra-tag
   ]; in wrap-l1 tag r-super.openblas;
 })

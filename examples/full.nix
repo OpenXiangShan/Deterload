@@ -1,5 +1,6 @@
 {...}@args: import ../. ({
   cc = "gcc13";
+  cores = "2";
 
   enableVector = true;
 
@@ -23,6 +24,6 @@
     "openblas" = "50";
   };
   cpt-intervals = "1000000";
-  cpt-simulator = "nemu";
-  cpt-format = "gz";
+  cpt-simulator = "qemu";
+  cpt-format = "zstd";
 } // args)
