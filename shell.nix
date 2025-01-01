@@ -48,9 +48,11 @@ pkgs.mkShell {
     pkgs.nix-output-monitor
     pkgs.mdbook
     pkgs.graphviz
+    pkgs.glibcLocales
     my-python3
   ];
   shellHook = ''
+    export LOCALE_ARCHIVE=${pkgs.glibcLocales}/lib/locale/locale-archive
     h
   '';
 }
