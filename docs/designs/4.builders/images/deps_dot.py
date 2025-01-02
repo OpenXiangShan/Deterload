@@ -76,13 +76,8 @@ builder = add(graph, Builder())
 inputs = add(graph, CCluster("inputs", label="", pencolor="transparent"))
 outputs = add(graph, CCluster("outputs", label="", pencolor="transparent"))
 
-class Benchmark(CCluster):
-  def __init__(self, name, **args):
-    CCluster.__init__(self, name, **args)
-    set_colors.benchmark(self)
-    self.run = addNode(self, "run")
-benchmark = add(inputs, Benchmark("benchmark"))
-addEdge(graph, benchmark.run, builder.imgBuilder.gcpt.opensbi.linux.initramfs.overlays.run_sh)
+benchmark = addNode(inputs, "benchmark"); set_colors.benchmark(benchmark)
+addEdge(graph, benchmark, builder.imgBuilder.gcpt.opensbi.linux.initramfs.overlays.run_sh)
 addEdge(graph, benchmark, builder.imgBuilder.gcpt.opensbi.linux.initramfs)
 
 class Output(CCluster):
