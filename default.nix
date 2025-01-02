@@ -428,4 +428,8 @@ in raw.overrideScope (r-self: r-super: {
     "${cores}core"
     openblas-extra-tag
   ]; in wrap-l1 tag r-super.openblas;
+
+  nyancat = r-self.build (r-self.riscv64-scope.writeShScript "nyancat-run" {} ''
+    timeout 20 ${r-self.riscv64-scope.riscv64-pkgs.nyancat}/bin/nyancat -t
+  '');
 })
