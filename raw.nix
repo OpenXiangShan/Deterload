@@ -43,6 +43,15 @@ pkgs.lib.makeScope pkgs.lib.callPackageWith (ds/*deterload-scope itself*/: {
     rmExt = name: builtins.concatStringsSep "."
       (pkgs.lib.init
         (pkgs.lib.splitString "." name));
+    writeShScript = name: passthru: text: pkgs.writeTextFile {
+      inherit name;
+      text = ''
+        #!/usr/bin/env sh
+        ${text}
+      '';
+      executable = true;
+      derivationArgs = { inherit passthru; };
+    };
   });
 
   benchmarks = ds.riscv64-scope.callPackage ./benchmarks {};

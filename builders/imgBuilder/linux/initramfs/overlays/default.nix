@@ -6,7 +6,7 @@
 , qemu_trap
 , nemu_trap
 , trapCommand
-, benchmark-run
+, benchmark
 }@args:
 let
   name = "initramfs-overlays";
@@ -17,7 +17,7 @@ let
   run_sh = writeText "run.sh" ''
     before_workload
     echo start
-    ${benchmark-run}
+    ${benchmark}
     echo exit
     ${trapCommand}
   '';

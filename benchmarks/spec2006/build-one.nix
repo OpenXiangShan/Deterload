@@ -1,5 +1,6 @@
 { runCommand
 , callPackage
+, writeShScript
 
 , riscv64-libc
 , riscv64-jemalloc
@@ -14,14 +15,11 @@
     inherit riscv64-libc riscv64-jemalloc;
     inherit src size enableVector optimize march;
   };
-in runCommand "${testCase}" {
-  # sh script to run a testcase
-  run = ''
-    cd /run
-    sh ./run-spec.sh
+  build-one = runCommand "${testCase}" {} ''
+    mkdir -p $out
+    cp -r ${build-all}/${testCase}/* $out/
   '';
-  passthru = args;
-} ''
-  mkdir -p $out
-  cp -r ${build-all}/${testCase}/* $out/
+in writeShScript "${testCase}-run" args ''
+  cd ${build-one}/run
+  sh ./run-spec.sh
 ''

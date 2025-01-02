@@ -2,11 +2,12 @@
 , fetchFromGitHub
 , riscv64-cc
 , riscv64-fortran
+, writeShScript
 
 , riscv64-libc
 , riscv64-libfortran
 , TARGET
-}: stdenv.mkDerivation {
+}: let drv = stdenv.mkDerivation {
   pname = "openblas";
   version = "0.3.28";
   src = fetchFromGitHub {
@@ -67,11 +68,9 @@
     cp benchmark/*.goto $out/bin/
   '';
   doCheck = false;
-
-  passthru.run = ''
-    for goto in /bin/*.goto; do
-      echo running $goto
-      $goto
-    done
-  '';
-}
+}; in writeShScript "openblas-run" {} ''
+  for goto in ${drv}/bin/*.goto; do
+    echo running $goto
+    $goto
+  done
+''

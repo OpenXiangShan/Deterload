@@ -25,8 +25,7 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
     inherit (self) riscv64-libc;
   };
   initramfs_overlays = callPackage ./imgBuilder/linux/initramfs/overlays {
-    inherit (self) riscv64-busybox before_workload qemu_trap nemu_trap;
-    benchmark-run = self.benchmark.run;
+    inherit (self) riscv64-busybox before_workload qemu_trap nemu_trap benchmark;
   };
 
   initramfs = callPackage ./imgBuilder/linux/initramfs {

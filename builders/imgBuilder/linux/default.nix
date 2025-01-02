@@ -22,7 +22,6 @@
 , riscv64-cc
 , rmExt
 , initramfs
-  # TODO: use overlayfs to reduce disk usage
 , common-build
 }@args: let overlayfsDisabled = stdenv.mkDerivation {
   name = "${rmExt initramfs.name}.linux";
