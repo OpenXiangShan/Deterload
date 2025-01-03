@@ -73,6 +73,6 @@ overlayfsEnabled = vmTools.runInLinuxVM (overlayfsDisabled.overrideAttrs (old: {
     ${fuse-overlayfs}/bin/fuse-overlayfs -o lowerdir=${old.src},workdir=workdir,upperdir=upperdir overlaydir
     cd overlaydir
   '';
-  memSize = 1024;
+  memSize = 2048;
 }));
 in if enableOverlayFS then overlayfsEnabled else overlayfsDisabled
