@@ -64,4 +64,6 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
   cpt = callPackage ./cptBuilder {
     inherit (self) stage3-checkpoint;
   };
+
+  sim = callPackage ./sim.nix { inherit (self) qemu img; };
 })

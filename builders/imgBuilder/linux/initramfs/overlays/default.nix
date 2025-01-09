@@ -7,12 +7,13 @@
 , nemu_trap
 , trapCommand
 , benchmark
+, interactive
 }@args:
 let
   name = "initramfs-overlays";
   inittab = writeText "inittab" ''
     ::sysinit:/bin/busybox --install -s
-    /dev/console::sysinit:-/bin/sh /bin/run.sh
+    /dev/console::sysinit:-/bin/sh ${if interactive then "" else "/bin/run.sh"}
   '';
   run_sh = writeText "run.sh" ''
     before_workload

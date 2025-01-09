@@ -271,6 +271,14 @@ arg::before {
 * **Note**: nemu supports both formats; however, qemu only supports zstd format.
 */
 , cpt-format ? "zstd"
+
+/**
+<arg>interactive</arg>: The image is interactive.
+* **Type**: bool
+* **Default value**: `false`
+* **Note**: This argument only use together with `-A sim` to debug.
+*/
+, interactive ? false
 }:
 assert pkgs.pkgsCross.riscv64 ? "${cc}Stdenv";
 assert lib.assertOneOf "cores" cores ["1" "2"];
@@ -371,6 +379,7 @@ in raw.overrideScope (r-self: r-super: {
   build = benchmark: (r-super.build benchmark).overrideScope (b-self: b-super: {
     initramfs_overlays = b-super.initramfs_overlays.override {
       trapCommand = "${cpt-simulator}_trap";
+      inherit interactive;
     };
     dts = b-super.dts.override { inherit cores; };
     gcpt = if cores=="1" then b-super.gcpt_single_core
@@ -397,6 +406,8 @@ in raw.overrideScope (r-self: r-super: {
       checkpoint_log = "checkpoint.log";
       smp = cores;
     };
+
+    sim = b-super.sim.override { smp = cores; };
   });
 
   spec2006 = let tag = builtins.concatStringsSep "_" [
