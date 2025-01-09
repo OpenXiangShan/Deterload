@@ -1,31 +1,20 @@
 { stdenv
+, runCommand
+, writeText
 , bc
 , flex
 , bison
-# * With OverlayFS disabled, the default `unpackPhase` will copy the entire `common-build`,
-#   which involves approximately 1.7GB of disk writes.
-#   When building N linux images simultaneously, the disk write throughput becomes N*1.7GB.
-# * With OverlayFS enabled, the build processes are overlaied onto 1.7GB `common-build`,
-#   resulting in minimal disk writes.
-#   However, because of the nix sandbox, overlayfs cannot be used directly in nix build processes,
-#   we utilize `runInLinuxVM` to work around this limitation.
-#   (For more details, see https://discourse.nixos.org/t/using-fuse-inside-nix-derivation/8534.)
-#   * If your nixbld* users have access to /dev/kvm,
-#     there will be no noticable performance degradation.
-#   * If your nixbld* users lack access to /dev/kvm,
-#     QEMU will fall back to translation mode (TCG),
-#     which is approximately 100 times slower.
-, enableOverlayFS ? true
-, fuse-overlayfs
-, vmTools
 
 , riscv64-cc
 , rmExt
 , initramfs
 , common-build
-}@args: let overlayfsDisabled = stdenv.mkDerivation {
+}@args: stdenv.mkDerivation (finalAttrs: {
   name = "${rmExt initramfs.name}.linux";
-  src = common-build;
+  src = builtins.fetchurl {
+    url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.10.7.tar.xz";
+    sha256 = "1adkbn6dqbpzlr3x87a18mhnygphmvx3ffscwa67090qy1zmc3ch";
+  };
   buildInputs = [
     bc
     flex
@@ -33,35 +22,47 @@
     riscv64-cc
   ];
 
+  patches = [
+    # Shutdown QEMU when the kernel raises a panic.
+    # This feature prevents the kernel from entering an endless loop,
+    # allowing for quicker identification of failed SPEC CPU testCases.
+    ./panic_shutdown.patch
+  ];
+
+  defconfig = runCommand "defconfig" {} ''
+    path=$(tar tf ${finalAttrs.src} | grep arch/riscv/configs/defconfig)
+    tar xf ${finalAttrs.src} $path -O > $out
+  '';
+  baseconfig = runCommand "baseconfig" {} ''
+    sed '/=m/d' ${finalAttrs.defconfig} | sed '/NFS/d' | sed '/CONFIG_FTRACE/d' > $out
+  '';
+  # TODO: auto deduplicate and merge xiangshan_defconfig to baseconfig
+  xiangshan_defconfig = writeText "xiangshan_defconfig" ''
+    ${builtins.readFile finalAttrs.baseconfig}
+    CONFIG_LOG_BUF_SHIFT=15
+    CONFIG_NONPORTABLE=y
+    CONFIG_RISCV_SBI_V01=y
+    CONFIG_SERIO_LIBPS2=y
+    CONFIG_SERIAL_UARTLITE=y
+    CONFIG_SERIAL_UARTLITE_CONSOLE=y
+    CONFIG_HVC_RISCV_SBI=y
+    CONFIG_STACKTRACE=y
+    CONFIG_RCU_CPU_STALL_TIMEOUT=300
+    CONFIG_CMDLINE="norandmaps"
+    CONFIG_INITRAMFS_SOURCE="${initramfs}"
+  '';
+
   buildPhase = ''
     export ARCH=riscv
     export CROSS_COMPILE=riscv64-unknown-linux-gnu-
 
-    # Prepare benchmark config
-    TESTCASE_DEFCONFIG=arch/riscv/configs/xiangshan_benchmark_defconfig
-    cat arch/riscv/configs/xiangshan_defconfig > $TESTCASE_DEFCONFIG
-    echo CONFIG_INITRAMFS_SOURCE=\"${initramfs}\" >> $TESTCASE_DEFCONFIG
-
     export KBUILD_BUILD_TIMESTAMP=@0
-    make xiangshan_benchmark_defconfig
+    ln -s ${finalAttrs.xiangshan_defconfig} arch/riscv/configs/xiangshan_defconfig
+    make xiangshan_defconfig
     make -j $NIX_BUILD_CORES
   '';
   installPhase = ''
-    # runInLinuxVM will auto create dir $out
-    rm -rf $out
     cp arch/riscv/boot/Image $out
   '';
   passthru = args;
-};
-overlayfsEnabled = vmTools.runInLinuxVM (overlayfsDisabled.overrideAttrs (old: {
-  unpackPhase = ''
-    mkdir workdir
-    mkdir upperdir
-    mkdir overlaydir
-    /run/modprobe fuse
-    ${fuse-overlayfs}/bin/fuse-overlayfs -o lowerdir=${old.src},workdir=workdir,upperdir=upperdir overlaydir
-    cd overlaydir
-  '';
-  memSize = 2048;
-}));
-in if enableOverlayFS then overlayfsEnabled else overlayfsDisabled
+})

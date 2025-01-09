@@ -34,11 +34,7 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
     overlays = self.initramfs_overlays;
   };
 
-  linux-common-build = callPackage ./imgBuilder/linux/common-build.nix {};
-  linux = callPackage ./imgBuilder/linux {
-    inherit (self) initramfs;
-    common-build = self.linux-common-build;
-  };
+  linux = callPackage ./imgBuilder/linux { inherit (self) initramfs; };
 
   dts = callPackage ./imgBuilder/opensbi/dts {};
   opensbi-common-build = callPackage ./imgBuilder/opensbi/common-build.nix {
