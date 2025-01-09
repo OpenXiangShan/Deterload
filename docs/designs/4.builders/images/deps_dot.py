@@ -32,8 +32,6 @@ class ImgBuilder(CCluster):
       def __init__(self, **args):
         CCluster.__init__(self, "opensbi", **args)
         self.dts = addNode(self, "dts")
-        self.common_build = addNode(self, "common-build")
-        addEdge(self, self.dts, self.common_build, constraint=False)
         self.linux = add(self, self.Linux())
     def __init__(self, **args):
       CCluster.__init__(self, "gcpt", **args, penwidth=3)
@@ -101,7 +99,6 @@ class Output(CCluster):
     addEdge(self, self._level1_, self._level2_, color="transparent")
     self.linux = addNode(self._level2_, "linux"); set_colors.gcpt(self.linux)
     self.dts = addNode(self._level2_, "dts"); set_colors.gcpt(self.dts)
-    self.opensbi_common_build = addNode(self._level2_, "opensbi-common-build"); set_colors.gcpt(self.opensbi_common_build)
     self.opensbi = addNode(self._level2_, "opensbi"); set_colors.gcpt(self.opensbi)
     self.gcpt = addNode(self._level2_, "gcpt"); set_colors.gcpt(self.gcpt)
     self.img = addNode(self._level2_, "img"); set_colors.imgBuilder(self.img)
@@ -140,7 +137,6 @@ addFlatEdge(graph, builder.imgBuilder.gcpt.opensbi.linux.initramfs.overlays, out
 addFlatEdge(graph, builder.imgBuilder.gcpt.opensbi.linux.initramfs, output.initramfs)
 addFlatEdge(graph, builder.imgBuilder.gcpt.opensbi.linux, output.linux)
 addFlatEdge(graph, builder.imgBuilder.gcpt.opensbi.dts, output.dts)
-addFlatEdge(graph, builder.imgBuilder.gcpt.opensbi.common_build, output.opensbi_common_build)
 addFlatEdge(graph, builder.imgBuilder.gcpt.opensbi, output.opensbi)
 addFlatEdge(graph, builder.imgBuilder.gcpt, output.gcpt)
 addFlatEdge(graph, builder.imgBuilder, output.img)

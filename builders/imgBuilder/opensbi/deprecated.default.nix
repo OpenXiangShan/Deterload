@@ -1,20 +1,18 @@
 { stdenv
-, fetchFromGitHub
 , python3
+, enableOverlayFS ? true
+, fuse-overlayfs
+, vmTools
 
 , riscv64-cc
 , rmExt
 , linux
 , dts
-}@args: stdenv.mkDerivation {
+, common-build
+}@args: let overlayfsDisabled = stdenv.mkDerivation {
   name = "${rmExt linux.name}.opensbi";
 
-  src = fetchFromGitHub {
-    owner = "riscv-software-src";
-    repo = "opensbi";
-    rev = "c4940a9517486413cd676fc8032bb55f9d4e2778";
-    hash = "sha256-cV+2DJjlqdG9zR3W6cH6BIZqnuB1kdH3mjc4PO+VPeE=";
-  };
+  src = common-build;
 
   buildInputs = [
     python3
@@ -60,7 +58,21 @@
   '';
 
   installPhase = ''
+    # runInLinuxVM will auto create dir $out
+    rm -rf $out
     cp build/platform/generic/firmware/fw_payload.bin $out
   '';
   passthru = args;
-}
+};
+overlayfsEnabled = vmTools.runInLinuxVM (overlayfsDisabled.overrideAttrs (old: {
+  unpackPhase = ''
+    mkdir workdir
+    mkdir upperdir
+    mkdir overlaydir
+    /run/modprobe fuse
+    ${fuse-overlayfs}/bin/fuse-overlayfs -o lowerdir=${old.src},workdir=workdir,upperdir=upperdir overlaydir
+    cd overlaydir
+  '';
+  memSize = 2048;
+}));
+in if enableOverlayFS then overlayfsEnabled else overlayfsDisabled
