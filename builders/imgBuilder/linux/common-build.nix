@@ -1,5 +1,6 @@
 { stdenv
 , writeText
+, runCommand
 , bc
 , flex
 , bison
@@ -8,12 +9,14 @@
 }:
 let
   name = "linux-common-build";
-in stdenv.mkDerivation {
+  # currently lastest stable linux version
+  version = "6.10.7";
+  sha256 = "1adkbn6dqbpzlr3x87a18mhnygphmvx3ffscwa67090qy1zmc3ch";
+in stdenv.mkDerivation (finalAttrs: {
   inherit name;
   src = builtins.fetchurl {
-    # currently lastest stable linux version
-    url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.10.7.tar.xz";
-    sha256 = "1adkbn6dqbpzlr3x87a18mhnygphmvx3ffscwa67090qy1zmc3ch";
+    url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${version}.tar.xz";
+    inherit sha256;
   };
   buildInputs = [
     bc
@@ -29,39 +32,34 @@ in stdenv.mkDerivation {
     ./panic_shutdown.patch
   ];
 
+  defconfig = runCommand "defconfig" {} ''
+    tar xf ${finalAttrs.src} linux-${version}/arch/riscv/configs/defconfig -O > $out
+  '';
+  baseconfig = runCommand "baseconfig" {} ''
+    sed '/=m/d' ${finalAttrs.defconfig} | sed '/NFS/d' | sed '/CONFIG_FTRACE/d' > $out
+  '';
+  # TODO: auto deduplicate and merge xiangshan_defconfig to baseconfig
+  xiangshan_defconfig = writeText "xiangshan_defconfig" ''
+    ${builtins.readFile finalAttrs.baseconfig}
+    CONFIG_LOG_BUF_SHIFT=15
+    CONFIG_NONPORTABLE=y
+    CONFIG_RISCV_SBI_V01=y
+    CONFIG_SERIO_LIBPS2=y
+    CONFIG_SERIAL_UARTLITE=y
+    CONFIG_SERIAL_UARTLITE_CONSOLE=y
+    CONFIG_HVC_RISCV_SBI=y
+    CONFIG_STACKTRACE=y
+    CONFIG_RCU_CPU_STALL_TIMEOUT=300
+    CONFIG_CMDLINE="norandmaps"
+  '';
+
   # TODO: add same gcc optimization cflags as benchmarks?
-  buildPhase = let
-    # based on https://github.com/OpenXiangShan/nemu_board/raw/37dc20e77a9bbff54dc2e525dc6c0baa3d50f948/configs/xiangshan_defconfig
-    # TODO: seperate xiangshan_defconfig into an independent file
-    xiangshan_defconfig = writeText "xiangshan_defconfig" ''
-      CONFIG_DEFAULT_HOSTNAME="(lvna)"
-      CONFIG_LOG_BUF_SHIFT=15
-      CONFIG_BLK_DEV_INITRD=y
-      CONFIG_EXPERT=y
-      CONFIG_NONPORTABLE=y
-      CONFIG_SMP=y
-      CONFIG_RISCV_SBI_V01=y
-      CONFIG_SERIO_LIBPS2=y
-      CONFIG_SERIAL_8250=y
-      CONFIG_SERIAL_8250_CONSOLE=y
-      CONFIG_SERIAL_8250_DW=y
-      CONFIG_SERIAL_OF_PLATFORM=y
-      CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
-      CONFIG_SERIAL_UARTLITE=y
-      CONFIG_SERIAL_UARTLITE_CONSOLE=y
-      CONFIG_HVC_RISCV_SBI=y
-      CONFIG_PRINTK_TIME=y
-      CONFIG_STACKTRACE=y
-      CONFIG_RCU_CPU_STALL_TIMEOUT=300
-      CONFIG_CMDLINE="norandmaps"
-    '';
-  in ''
+  buildPhase = ''
     export ARCH=riscv
-    export RISCV_ROOTFS_HOME=$(realpath ../riscv-rootfs/)
     export CROSS_COMPILE=riscv64-unknown-linux-gnu-
 
     export KBUILD_BUILD_TIMESTAMP=@0
-    ln -s ${xiangshan_defconfig} arch/riscv/configs/xiangshan_defconfig
+    ln -s ${finalAttrs.xiangshan_defconfig} arch/riscv/configs/xiangshan_defconfig
     make xiangshan_defconfig
     make -j $NIX_BUILD_CORES
 
@@ -74,4 +72,4 @@ in stdenv.mkDerivation {
     cp -r ./* $out/
   '';
   dontFixup = true;
-}
+})

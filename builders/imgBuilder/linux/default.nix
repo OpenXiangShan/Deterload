@@ -35,7 +35,6 @@
 
   buildPhase = ''
     export ARCH=riscv
-    export RISCV_ROOTFS_HOME=$(realpath ../riscv-rootfs/)
     export CROSS_COMPILE=riscv64-unknown-linux-gnu-
 
     # Prepare benchmark config
