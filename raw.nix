@@ -3,8 +3,8 @@
     sha256 = "1n6gdjny8k5rwkxh6sp1iwg1y3ni1pm7lvh9sisifgjb18jdvzbm";
   }) {}
 }:
-pkgs.lib.makeScope pkgs.lib.callPackageWith (ds/*deterload-scope itself*/: {
-  riscv64-scope = let callPackageDefaultThrowWith = autoArgs: fn: args:
+pkgs.lib.makeScope pkgs.lib.callPackageWith (raw/*deterload-scope itself*/: {
+  deterPkgs = let callPackageDefaultThrowWith = autoArgs: fn: args:
     let inherit (pkgs.lib) isFunction functionArgs intersectAttrs mapAttrs filterAttrs attrNames makeOverridable;
       f = if isFunction fn then fn else import fn;
       fargs = functionArgs f;
@@ -54,12 +54,12 @@ pkgs.lib.makeScope pkgs.lib.callPackageWith (ds/*deterload-scope itself*/: {
     };
   });
 
-  benchmarks = ds.riscv64-scope.callPackage ./benchmarks {};
+  benchmarks = raw.deterPkgs.callPackage ./benchmarks {};
 
-  build = ds.riscv64-scope.callPackage ./builders {};
+  build = raw.deterPkgs.callPackage ./builders {};
 
-  spec2006 = builtins.mapAttrs (name: benchmark: (ds.build benchmark))
-    (pkgs.lib.filterAttrs (n: v: (pkgs.lib.isDerivation v)) ds.benchmarks.spec2006);
+  spec2006 = builtins.mapAttrs (name: benchmark: (raw.build benchmark))
+    (pkgs.lib.filterAttrs (n: v: (pkgs.lib.isDerivation v)) raw.benchmarks.spec2006);
 
-  openblas = ds.build ds.benchmarks.openblas;
+  openblas = raw.build raw.benchmarks.openblas;
 })

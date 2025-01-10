@@ -289,14 +289,14 @@ assert lib.assertOneOf "cpt-simulator" cpt-simulator ["qemu" "nemu"];
 assert lib.assertOneOf "cpt-format" cpt-format ["gz" "zstd"];
 assert lib.assertMsg (cpt-simulator=="qemu" -> cpt-format=="zstd") "qemu only supports cpt-format: zstd";
 let
-  raw = import ./raw.nix { inherit pkgs; };
+  raw' = import ./raw.nix { inherit pkgs; };
   utils = pkgs.callPackage ./utils.nix {};
-in raw.overrideScope (r-self: r-super: {
-  riscv64-scope = r-super.riscv64-scope.overrideScope (self: super: {
+in raw'.overrideScope (deterload: raw: {
+  deterPkgs = raw.deterPkgs.overrideScope (self: super: {
     riscv64-stdenv = super.riscv64-pkgs."${cc}Stdenv";
   });
 
-  benchmarks = r-super.benchmarks.overrideScope (bmks-self: bmks-super: {
+  benchmarks = raw.benchmarks.overrideScope (self: super: {
     spec2006 = builtins.mapAttrs (testcase: value: value.override {
       inherit enableVector;
       src = spec2006-src;
@@ -305,36 +305,36 @@ in raw.overrideScope (r-self: r-super: {
       march = spec2006-march;
     }) (lib.filterAttrs (testcase: value:
       (spec2006-testcase-filter testcase) && (lib.isDerivation value))
-    bmks-super.spec2006);
+    super.spec2006);
 
-    openblas = bmks-super.openblas.override {
+    openblas = super.openblas.override {
       TARGET = openblas-target;
     };
   });
 
-  build = benchmark: (r-super.build benchmark).overrideScope (b-self: b-super: {
-    initramfs_overlays = b-super.initramfs_overlays.override {
+  build = benchmark: (raw.build benchmark).overrideScope (self: super: {
+    initramfs_overlays = super.initramfs_overlays.override {
       trapCommand = "${cpt-simulator}_trap";
       inherit interactive;
     };
-    dts = b-super.dts.override { inherit cores; };
-    gcpt = if cores=="1" then b-super.gcpt_single_core
-      else if cores=="2" then b-super.gcpt_dual_core
-      else b-super.gcpt;
+    dts = super.dts.override { inherit cores; };
+    gcpt = if cores=="1" then super.gcpt_single_core
+      else if cores=="2" then super.gcpt_dual_core
+      else super.gcpt;
 
-    stage1-profiling = b-super.stage1-profiling.override {
+    stage1-profiling = super.stage1-profiling.override {
       workload_name = "miao";
       intervals = cpt-intervals;
       simulator = cpt-simulator;
       profiling_log = "profiling.log";
       smp = cores;
     };
-    stage2-cluster = b-super.stage2-cluster.override {
+    stage2-cluster = super.stage2-cluster.override {
       maxK = if (cpt-maxK-bmk ? "${utils.getName benchmark}")
         then cpt-maxK-bmk."${utils.getName benchmark}"
         else cpt-maxK;
     };
-    stage3-checkpoint = b-super.stage3-checkpoint.override {
+    stage3-checkpoint = super.stage3-checkpoint.override {
       workload_name = "miao";
       intervals = cpt-intervals;
       simulator = cpt-simulator;
@@ -343,40 +343,40 @@ in raw.overrideScope (r-self: r-super: {
       smp = cores;
     };
 
-    sim = b-super.sim.override { smp = cores; };
+    sim = super.sim.override { smp = cores; };
   });
 
   spec2006 = let tag = builtins.concatStringsSep "_" [
     "spec2006"
     spec2006-size
-    (lib.removePrefix "${r-self.riscv64-scope.riscv64-stdenv.targetPlatform.config}-" r-self.riscv64-scope.riscv64-stdenv.cc.cc.name)
+    (lib.removePrefix "${deterload.deterPkgs.riscv64-stdenv.targetPlatform.config}-" deterload.deterPkgs.riscv64-stdenv.cc.cc.name)
     spec2006-optimize
     spec2006-march
-    r-self.benchmarks.riscv64-libc.pname
-    r-self.benchmarks.riscv64-jemalloc.pname
+    deterload.benchmarks.riscv64-libc.pname
+    deterload.benchmarks.riscv64-jemalloc.pname
     cpt-simulator
     (utils.metricPrefix cpt-intervals)
     (let suffix = lib.optionalString (builtins.any
       (x: x.stage2-cluster.maxK!=cpt-maxK)
-      (builtins.attrValues r-super.spec2006)
+      (builtins.attrValues raw.spec2006)
     ) "x"; in"maxK${cpt-maxK}${suffix}")
     "${cores}core"
     spec2006-extra-tag
-  ]; in r-super.spec2006 // (utils.wrap-l2 tag r-super.spec2006);
+  ]; in raw.spec2006 // (utils.wrap-l2 tag raw.spec2006);
 
   openblas = let tag = builtins.concatStringsSep "_" [
     "openblas"
-    (lib.removePrefix "${r-self.riscv64-scope.riscv64-stdenv.targetPlatform.config}-" r-self.riscv64-scope.riscv64-stdenv.cc.cc.name)
+    (lib.removePrefix "${deterload.deterPkgs.riscv64-stdenv.targetPlatform.config}-" deterload.deterPkgs.riscv64-stdenv.cc.cc.name)
     openblas-target
-    r-self.benchmarks.riscv64-libc.pname
+    deterload.benchmarks.riscv64-libc.pname
     cpt-simulator
     (utils.metricPrefix cpt-intervals)
-    "maxK${r-super.openblas.stage2-cluster.maxK}"
+    "maxK${raw.openblas.stage2-cluster.maxK}"
     "${cores}core"
     openblas-extra-tag
-  ]; in utils.wrap-l1 tag r-super.openblas;
+  ]; in utils.wrap-l1 tag raw.openblas;
 
-  nyancat = r-self.build (r-self.riscv64-scope.writeShScript "nyancat-run" {} ''
-    timeout 20 ${r-self.riscv64-scope.riscv64-pkgs.nyancat}/bin/nyancat -t
+  nyancat = deterload.build (deterload.deterPkgs.writeShScript "nyancat-run" {} ''
+    timeout 20 ${deterload.deterPkgs.riscv64-pkgs.nyancat}/bin/nyancat -t
   '');
 })
