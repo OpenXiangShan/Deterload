@@ -39,6 +39,7 @@
   # TODO: auto deduplicate and merge xiangshan_defconfig to baseconfig
   xiangshan_defconfig = writeText "xiangshan_defconfig" ''
     ${builtins.readFile finalAttrs.baseconfig}
+    CONFIG_KVM=y
     CONFIG_LOG_BUF_SHIFT=15
     CONFIG_NONPORTABLE=y
     CONFIG_RISCV_SBI_V01=y
