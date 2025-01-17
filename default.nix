@@ -35,7 +35,7 @@ arg::before {
 , cc ? "gcc14"
 
 /**
-<arg>cores</args>: Number of cores.
+<arg>cores</arg>: Number of cores.
 * **Type**: number-in-string
 * **Default value**: `"1"`
 * **Available values**: `"1"`, `"2"`.
@@ -280,6 +280,13 @@ arg::before {
 * **Note**: This argument only use together with `-A sim` to debug.
 */
 , interactive ? false
+
+/**
+<arg>enableTrap</arg>: Whether to incorporate QEMU/NEMU trap in image.
+* **Type**: bool
+* **Default value**: `true`
+*/
+, enableTrap ? true
 }:
 assert pkgs.pkgsCross.riscv64 ? "${cc}Stdenv";
 assert lib.assertOneOf "cores" cores ["1" "2"];
@@ -316,7 +323,7 @@ in raw'.overrideScope (deterload: raw: {
   build = benchmark: (raw.build benchmark).overrideScope (self: super: {
     initramfs_overlays = super.initramfs_overlays.override {
       trapCommand = "${cpt-simulator}_trap";
-      inherit interactive;
+      inherit interactive enableTrap;
     };
     dts = super.dts.override { inherit cores; };
     gcpt = if cores=="1" then super.gcpt_single_core
