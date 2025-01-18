@@ -17,7 +17,7 @@ let
     /dev/console::sysinit:-/bin/sh ${if interactive then "" else "/bin/run.sh"}
   '';
   run_sh = writeText "run.sh" ''
-    ${if enableTrap then before_workload else ""}
+    ${if enableTrap then "before_workload" else ""}
     echo start
     ${benchmark}
     echo exit
