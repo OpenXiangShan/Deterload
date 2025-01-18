@@ -1,6 +1,7 @@
 { runCommand
 , rmExt
 
+, utils
 , qemu
 , nemu
 , img
@@ -11,7 +12,12 @@
 , smp
 }@args:
 let
-  name = "${rmExt img.name}.1_profiling";
+  name = "${rmExt img.name}." + (builtins.concatStringsSep "_" [
+    simulator
+    (utils.metricPrefix intervals)
+    "${smp}core"
+    "1_profiling"
+  ]);
 
   qemuCommand = [
     "${qemu}/bin/qemu-system-riscv64"

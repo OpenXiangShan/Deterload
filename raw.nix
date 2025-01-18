@@ -4,59 +4,7 @@
   }) {}
 }:
 pkgs.lib.makeScope pkgs.lib.callPackageWith (raw/*deterload-scope itself*/: {
-  deterPkgs = let callPackageDefaultThrowWith = autoArgs: fn: args:
-    let inherit (pkgs.lib) isFunction functionArgs intersectAttrs mapAttrs filterAttrs attrNames makeOverridable;
-      f = if isFunction fn then fn else import fn;
-      fargs = functionArgs f;
-      allArgs = intersectAttrs fargs autoArgs // args;
-      missingArgs =
-        # Throw error message for missing args
-        (mapAttrs (name: value: throw ''Argument "${name}" has not been overrided'')
-        # Filter out arguments that have a default value
-        (filterAttrs (name: value: ! value)
-        # Filter out arguments that would be passed
-        (removeAttrs fargs (attrNames allArgs))));
-    in makeOverridable f (allArgs // missingArgs);
-  in pkgs.lib.makeScope callPackageDefaultThrowWith (self: pkgs // {
-    riscv64-pkgs = pkgs.pkgsCross.riscv64;
-    riscv64-stdenv = self.riscv64-pkgs.gcc14Stdenv;
-    riscv64-cc = self.riscv64-stdenv.cc;
-    riscv64-fortran = self.riscv64-pkgs.wrapCCWith {
-      cc = self.riscv64-stdenv.cc.cc.override {
-        name = "gfortran";
-        langFortran = true;
-        langCC = false;
-        langC = false;
-        profiledCompiler = false;
-      };
-      # fixup wrapped prefix, which only appear if hostPlatform!=targetPlatform
-      #   for more details see <nixpkgs>/pkgs/build-support/cc-wrapper/default.nix
-      stdenvNoCC = self.riscv64-pkgs.stdenvNoCC.override {
-        hostPlatform = pkgs.stdenv.hostPlatform;
-      };
-      # Beginning from 24.05, wrapCCWith receive `runtimeShell`.
-      # If leave it empty, the default uses riscv64-pkgs.runtimeShell,
-      # thus executing the sheBang will throw error:
-      #   `cannot execute: required file not found`.
-      runtimeShell = pkgs.runtimeShell;
-    };
-    rmExt = name: builtins.concatStringsSep "."
-      (pkgs.lib.init
-        (pkgs.lib.splitString "." name));
-    writeShScript = name: passthru: text: pkgs.writeTextFile {
-      inherit name;
-      text = ''
-        #!/usr/bin/env sh
-        ${text}
-      '';
-      executable = true;
-      derivationArgs = { inherit passthru; };
-    };
-  });
-
   benchmarks = raw.deterPkgs.callPackage ./benchmarks {};
-
-  build = raw.deterPkgs.callPackage ./builders {};
 
   spec2006 = builtins.mapAttrs (name: benchmark: (raw.build benchmark))
     (pkgs.lib.filterAttrs (n: v: (pkgs.lib.isDerivation v)) raw.benchmarks.spec2006);

@@ -8,7 +8,6 @@
 , riscv64-cc
 , rmExt
 , initramfs
-, common-build
 }@args: stdenv.mkDerivation (finalAttrs: {
   name = "${rmExt initramfs.name}.linux";
   src = builtins.fetchurl {

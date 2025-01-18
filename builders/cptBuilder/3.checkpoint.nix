@@ -36,7 +36,7 @@ let
     "--checkpoint-format ${checkpoint_format}"
   ];
 
-in runCommand "${rmExt stage2-cluster.name}.3_checkpoint" {
+in runCommand "${rmExt stage2-cluster.name}.${smp}core_3_checkpoint" {
   passthru = args;
 } ''
   mkdir -p $out
