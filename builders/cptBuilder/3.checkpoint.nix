@@ -1,6 +1,7 @@
 { runCommand
 , rmExt
 
+, utils
 , qemu
 , nemu
 , img
@@ -36,7 +37,12 @@ let
     "--checkpoint-format ${checkpoint_format}"
   ];
 
-in runCommand "${rmExt stage2-cluster.name}.${smp}core_3_checkpoint" {
+in runCommand ("${rmExt stage2-cluster.name}." + (builtins.concatStringsSep "_" [
+  simulator
+  (utils.metricPrefix intervals)
+  "${smp}core"
+  "3_checkpoint"
+])) {
   passthru = args;
 } ''
   mkdir -p $out
