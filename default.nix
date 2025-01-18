@@ -8,20 +8,6 @@ in lib.makeOverridable (
   }) {}
 
 /**
-<style>
-arg {
-  font-family: mono;
-  font-size: 1.2em;
-  font-weight: bold;
-}
-arg::before {
-  content: "• "
-}
-</style>
-*/
-/** ## Common Configuration */
-
-/**
 <arg>cc</arg>: Compiler Collection used for compiling RISC-V binaries.
 * **Type**: string
 * **Default value**: `"gcc14"`
