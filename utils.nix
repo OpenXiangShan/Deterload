@@ -6,7 +6,7 @@
   escapeName = lib.converge (name:
     builtins.replaceStrings
       [" " "." "-" "__"]
-      [""  ""  "_" "_" ]
+      [""  "_"  "_" "_" ]
   name);
   /*set -> set: filter derivations in a set*/
   filterDrvs = set: lib.filterAttrs (n: v: (lib.isDerivation v)) set;

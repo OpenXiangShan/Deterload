@@ -5,6 +5,7 @@
 , riscv64-cc
 , riscv64-fortran
 
+, utils
 , riscv64-libc
 , riscv64-jemalloc
 , src
@@ -21,7 +22,15 @@ let
     hash = "sha256-qNxmM9Dmobr6fvTZapacu8jngcBPRbybwayTi7CZGd0=";
   };
 in stdenv.mkDerivation {
-  name = "spec2006exe";
+  name = utils.escapeName (builtins.concatStringsSep "_" [
+    "spec2006"
+    size
+    (lib.removePrefix "${stdenv.targetPlatform.config}-" stdenv.cc.cc.name)
+    optimize
+    march
+    riscv64-libc.pname
+    riscv64-jemalloc.pname
+  ]);
   system = "x86_64-linux";
 
   srcs = [

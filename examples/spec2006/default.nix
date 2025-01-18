@@ -129,5 +129,13 @@ let
   spec2006-filtered = lib.filterAttrs (testcase: value:
     (testcase-filter testcase) && (lib.isDerivation value))
     spec2006-full;
-in builtins.mapAttrs (name: benchmark: (deterload.build benchmark))
-  (lib.filterAttrs (n: v: (lib.isDerivation v)) spec2006-filtered)
+  spec2006-deterload = builtins.mapAttrs
+    (name: benchmark: (deterload.build benchmark))
+    (lib.filterAttrs (n: v: (lib.isDerivation v)) spec2006-filtered);
+in spec2006-deterload // (
+  deterload.deterPkgs.utils.wrap-l2
+    (deterload.deterPkgs.rmExt
+      (builtins.head 
+        (builtins.attrValues spec2006-deterload)).benchmark.name)
+    spec2006-deterload
+)
