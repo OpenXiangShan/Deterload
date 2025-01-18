@@ -6,6 +6,7 @@
 , lib
 
 , utils
+, riscv64-stdenv
 , riscv64-libc
 , riscv64-libfortran
 , TARGET
@@ -72,7 +73,7 @@
   doCheck = false;
 }; in writeShScript (utils.escapeName (builtins.concatStringsSep "_" [
   "openblas"
-  (lib.removePrefix "${stdenv.targetPlatform.config}-" stdenv.cc.cc.name)
+  (lib.removePrefix "${riscv64-stdenv.targetPlatform.config}-" riscv64-stdenv.cc.cc.name)
   TARGET
   riscv64-libc.pname
 ])) {} ''

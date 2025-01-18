@@ -6,6 +6,7 @@
 , riscv64-fortran
 
 , utils
+, riscv64-stdenv
 , riscv64-libc
 , riscv64-jemalloc
 , src
@@ -25,7 +26,7 @@ in stdenv.mkDerivation {
   name = utils.escapeName (builtins.concatStringsSep "_" [
     "spec2006"
     size
-    (lib.removePrefix "${stdenv.targetPlatform.config}-" stdenv.cc.cc.name)
+    (lib.removePrefix "${riscv64-stdenv.targetPlatform.config}-" riscv64-stdenv.cc.cc.name)
     optimize
     march
     riscv64-libc.pname

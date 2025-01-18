@@ -1,6 +1,4 @@
-{ deterload ? import ../../defaultNew.nix {}
-, lib ? deterload.deterPkgs.lib
-
+{ lib ? import <nixpkgs/lib>
 /**
 <arg>enableVector</arg>: Controls compiler's auto-vectorization during benchmark builds.
 * **Type**: bool
@@ -103,9 +101,11 @@
   ```
 */
 , testcase-filter ? testcase: true
-}:
+, ...
+}@args:
 assert lib.assertOneOf "size" size ["ref" "train" "test"];
 let
+  deterload = import ../.. args;
   spec2006-full = deterload.deterPkgs.callPackage ./packages.nix {
     riscv64-libc = deterload.deterPkgs.riscv64-stdenv.cc.libc.static;
     riscv64-jemalloc = deterload.deterPkgs.riscv64-pkgs.jemalloc.overrideAttrs (oldAttrs: {

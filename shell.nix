@@ -16,21 +16,15 @@ let
       * `nom-build ... --arg <key> <value> ...`
       * `nom-build ... --argstr <key> <strvalue> ...`
       * E.g: Generate spec2006 checkpoints using given source code:
-        * `nom-build --arg spec2006-src <PATH_TO_SPEC2006> -A spec2006-cpt`
-    * Configure by a file: see `examples/`
+        * `nom-build examples/spec2006/ --arg src <PATH_TO_SPEC2006> -A cpt`
+    * Configure by a file: see `examples/*/config.nix`
 
     ## Generation
 
     * Generate the checkpoints for a given <benchmark> into `result/`:
-      * `nom-build -A <benchmark>`
-      * E.g: Generate checkpoints for all spec2006 testcases:
-        * `nom-build -A spec2006.cpt`
-      * E.g: Generate checkpoints only for spec2006 403_gcc testcase:
-        * `nom-build -A spec2006.403_gcc.cpt`
+      * `nom-build examples/<benchmark> -A cpt`
       * E.g: Generate checkpoints for openblas:
-        * `nom-build -A openblas.cpt`
-    * Generate the checkpoints for a given <benchmark> into a dedicated <folder>:
-      * `nom-build -A <benchmark>.cpt -o <folder>`
+        * `nom-build examples/openblas -A cpt`
 
     ## Documentation
 
