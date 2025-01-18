@@ -1,2 +1,4 @@
 * clean *.py
 * support dynamically linked benchmark
+* why in smp=2 qemu, cat /proc/cpuinfo only have 1 cpu? but cat /proc stats show 2 cpu? Do we really have a dual-cpu system?
+* mv rmExt to utils
