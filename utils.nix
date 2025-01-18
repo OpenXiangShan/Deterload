@@ -41,14 +41,6 @@
       }) attrBuildResults);
   }) (attrDrvNames attrBuildResults);
 
-  wrap-l1 = prefix: buildResult: builtins.mapAttrs (name: value:
-    if lib.isDerivation value then symlinkJoin {
-      name = escapeName "${prefix}_${name}";
-      paths = [value];
-      passthru = lib.optionalAttrs (value?passthru) value.passthru;
-    } else value
-  ) buildResult;
-
   metricPrefix = input: let
     num =  if builtins.isInt input then input
       else if builtins.isString input then lib.toInt input

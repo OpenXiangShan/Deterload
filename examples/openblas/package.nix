@@ -3,7 +3,9 @@
 , riscv64-cc
 , riscv64-fortran
 , writeShScript
+, lib
 
+, utils
 , riscv64-libc
 , riscv64-libfortran
 , TARGET
@@ -68,10 +70,14 @@
     cp benchmark/*.goto $out/bin/
   '';
   doCheck = false;
-}; in writeShScript "openblas-run" {} ''
+}; in writeShScript (utils.escapeName (builtins.concatStringsSep "_" [
+  "openblas"
+  (lib.removePrefix "${stdenv.targetPlatform.config}-" stdenv.cc.cc.name)
+  TARGET
+  riscv64-libc.pname
+])) {} ''
   for goto in ${drv}/bin/*.goto; do
     echo running $goto
     $goto
   done
 ''
-
