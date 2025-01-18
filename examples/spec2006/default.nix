@@ -101,6 +101,24 @@
   ```
 */
 , testcase-filter ? testcase: true
+
+/**
+<arg>per-bmk-maxK</arg>: maxK values for specifed benchmarks in checkpoint generation.
+* **Type**: attr (`{ benchmark-name = number-in-string; ... }`)
+* **Default value**: `{ "483_xalancbmk" = "100"; }`
+* **Description**:
+  `per-bmk-maxK` sets the the maxK for specifed benchmarks.
+  Unspecified benchmarks will use the value from `cpt-maxK`.
+  This attribute consists of key-value pairs where:
+  * Key: benchmark name.
+  * Value: number in a string (same format as `cpt-maxK`).
+* **FAQ**: Why set maxK of 483_xalancbmk to 100?
+  * Setting maxK to 30 for 483_xalancbmk resulted in unstable scores.
+*/
+, per-bmk-maxK ? {
+    "483_xalancbmk" = "100";
+  }
+
 , ...
 }@args:
 assert lib.assertOneOf "size" size ["ref" "train" "test"];
@@ -130,6 +148,10 @@ let
     (testcase-filter testcase) && (lib.isDerivation value))
     spec2006-full;
   spec2006-deterload = builtins.mapAttrs
-    (name: benchmark: (deterload.build benchmark))
+    (name: benchmark: (deterload.override (
+      if (per-bmk-maxK ? "${name}") then {
+        cpt-maxK = per-bmk-maxK."${name}";
+      } else {}
+    )).build benchmark)
     (lib.filterAttrs (n: v: (lib.isDerivation v)) spec2006-filtered);
 in spec2006-deterload // ( deterload.deterPkgs.utils.wrap-l2 spec2006-deterload )

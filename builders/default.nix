@@ -27,47 +27,6 @@ cores ? "1"
 , cpt-maxK ? "30"
 
 /**
-<arg>cpt-maxK-bmk</arg>: maxK values for specifed benchmarks in checkpoint generation.
-* **Type**: attr (`{ benchmark-name = number-in-string; ... }`)
-* **Default value**: `{ "483.xalancbmk" = "100"; }`
-* **Description**:
-  `cpt-maxK-bmk` sets the the maxK for specifed benchmarks.
-  Unspecified benchmarks will use the value from `cpt-maxK`.
-  This attribute consists of key-value pairs where:
-  * Key: benchmark name.
-  * Value: number in a string (same format as `cpt-maxK`).
-* **FAQ 1**: Why set maxK of 483.xalancbmk to 100?
-  * Setting maxK to 30 for 483.xalancbmk resulted in unstable scores.
-* **FAQ 2**: How to retreive the benchmark name?
-  * Use the following commands:
-    ```bash
-    # Try `pname` first, if not available, use `name`.
-    nix-instantiate --eval -A <benchmark>.benchmark.pname
-    nix-instantiate --eval -A <benchmark>.benchmark.name
-    ```
-
-    Examples:
-
-    ```bash
-    # To retreive the name of openblas benchmark, first try
-    nix-instantiate --eval -A openblas.benchmark.pname
-    # Output: "openblas"
-    ```
-    ```bash
-    # To retreive the name of 483_xalancbmk benchmark, first try
-    nix-instantiate --eval -A spec2006.483_xalancbmk.benchmark.pname
-    # Error: attribute 'pname' in selection path 'spec2006.483_xalancbmk.benchmark.pname' not found Did you mean name?
-    # Second try
-    nix-instantiate --eval -A spec2006.483_xalancbmk.benchmark.name
-    # Output: "483.xalancbmk"
-    ```
-*/
-, cpt-maxK-bmk ? {
-    # TODO: rename xxx.yyyyyyy to xxx_yyyyyy ?
-    "483.xalancbmk" = "100";
-  }
-
-/**
 <arg>cpt-intervals</arg>: Number of BBV interval instructions in checkpoint generation.
 * **Type**: number-in-string
 * **Default value**: `"20000000"`
@@ -184,12 +143,7 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
   };
   stage2-cluster = callPackage ./cptBuilder/2.cluster.nix {
     inherit (self) simpoint stage1-profiling;
-    # TODO: move to benchmarks?
-    maxK = let
-      benchmark-name = if (benchmark?pname) then benchmark.pname else benchmark.name;
-    in if (cpt-maxK-bmk ? "${benchmark-name}")
-      then cpt-maxK-bmk."${benchmark-name}"
-      else cpt-maxK;
+    maxK = cpt-maxK;
   };
   stage3-checkpoint = callPackage ./cptBuilder/3.checkpoint.nix {
     inherit (self) qemu nemu img stage2-cluster;
