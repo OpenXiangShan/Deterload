@@ -1,10 +1,11 @@
 { runCommand
 , rmExt
 
+, utils
 , maxK
 , simpoint
 , stage1-profiling
-}@args: runCommand "${rmExt stage1-profiling.name}.2_cluster" {
+}@args: runCommand "${rmExt stage1-profiling.name}.maxK${utils.metricPrefix maxK}_2_cluster" {
   passthru = args;
 } (''
   mkdir -p $out
