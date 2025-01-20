@@ -2,10 +2,17 @@
 , runCommand
 
 , riscv64-busybox
-, enableTrap
 , before_workload
 , after_workload
 , benchmark
+, enableTrap
+, run_sh ? writeText "run.sh" ''
+    ${if enableTrap then "before_workload" else ""}
+    echo start
+    ${benchmark}
+    echo exit
+    ${if enableTrap then "after_workload" else ""}
+  ''
 , interactive
 }@args:
 let
@@ -13,13 +20,6 @@ let
   inittab = writeText "inittab" ''
     ::sysinit:/bin/busybox --install -s
     /dev/console::sysinit:-/bin/sh ${if interactive then "" else "/bin/run.sh"}
-  '';
-  run_sh = writeText "run.sh" ''
-    ${if enableTrap then "before_workload" else ""}
-    echo start
-    ${benchmark}
-    echo exit
-    ${if enableTrap then "after_workload" else ""}
   '';
 in runCommand name {
   passthru = args // { inherit inittab run_sh; };
