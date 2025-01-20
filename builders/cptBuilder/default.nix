@@ -8,7 +8,7 @@ in stage3-checkpoint.overrideAttrs (old: {
   name = "${rmExt stage1-profiling.img.name}." + (builtins.concatStringsSep "_" [
     stage3-checkpoint.simulator
     (utils.metricPrefix stage3-checkpoint.intervals)
-    "maxK${stage2-cluster.maxK}"
+    "maxK${utils.metricPrefix stage2-cluster.maxK}"
     "${stage3-checkpoint.smp}core"
     "cpt"
   ]);
