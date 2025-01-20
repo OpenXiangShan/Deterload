@@ -102,8 +102,8 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
     inherit (self) riscv64-libc;
   };
   initramfs_overlays = callPackage ./imgBuilder/linux/initramfs/overlays {
-    inherit (self) riscv64-busybox before_workload qemu_trap nemu_trap benchmark;
-    trapCommand = "${cpt-simulator}_trap";
+    inherit (self) riscv64-busybox before_workload benchmark;
+    after_workload = self."${cpt-simulator}_trap";
     inherit interactive enableTrap;
   };
 

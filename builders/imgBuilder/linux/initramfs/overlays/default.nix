@@ -4,9 +4,7 @@
 , riscv64-busybox
 , enableTrap
 , before_workload
-, qemu_trap
-, nemu_trap
-, trapCommand
+, after_workload
 , benchmark
 , interactive
 }@args:
@@ -21,7 +19,7 @@ let
     echo start
     ${benchmark}
     echo exit
-    ${if enableTrap then trapCommand else ""}
+    ${if enableTrap then "after_workload" else ""}
   '';
 in runCommand name {
   passthru = args // { inherit inittab run_sh; };
@@ -37,6 +35,5 @@ in runCommand name {
   cp ${run_sh} $out/bin/run.sh
 '' + (if enableTrap then ''
   cp ${before_workload}/bin/before_workload $out/bin/
-  cp ${qemu_trap}/bin/qemu_trap $out/bin/
-  cp ${nemu_trap}/bin/nemu_trap $out/bin/
+  cp ${after_workload}/bin/after_workload $out/bin/
 '' else ""))

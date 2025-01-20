@@ -15,10 +15,10 @@ stdenv.mkDerivation rec {
     riscv64-libc
   ];
   buildPhase = ''
-    riscv64-unknown-linux-gnu-gcc ${src} -o ${name} -static
+    riscv64-unknown-linux-gnu-gcc ${src} -o after_workload -static
   '';
   installPhase = ''
     mkdir -p $out/bin
-    cp ${name} $out/bin/
+    cp after_workload $out/bin/
   '';
 }
