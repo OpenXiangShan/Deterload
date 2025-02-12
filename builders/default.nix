@@ -73,6 +73,55 @@ cores ? "1"
 */
 , enableTrap ? true
 
+/**
+<arg>linuxVersion</arg>: The linux kernel version
+* **Type**: string
+* **Default value**: `"default"`
+* **Available values**: Suffix of any nixpkgs-supported linuxKernel.kernels.linux_<u>xxx</u>.
+  To list available linuxKernel.kernels.linux_<u>xxx</u>:
+  ```bash
+  nix-instantiate --eval -E 'let pkgs=import <nixpkgs> {}; in builtins.filter (x: pkgs.lib.hasPrefix "linux_" x) (builtins.attrNames pkgs.linuxKernel.kernels)'
+  ```
+*/
+, linuxVersion ? "default"
+
+/**
+<arg>linuxStructuredExtraConfig</arg>: The extra structured linux config
+* **Type**: attr (with lib.kernel; {kernelConfigEntry = kernelItem; ...})
+* **Note1**:
+  The syntax of kernelConfigEntry is the entry available is Kconfig.
+  In other words, the CONFIG_XXX with "CONFIG_" removed.
+  The syntax of kernelItem is lib.kernel.xxx.
+* **Note2**:
+  This argument will used to generate linux config file together with riscv64's defconfig
+  and built-in configs in builders/imgBuilder/linux/default.nix.
+  The generated config file can be accessed by `linux.configfile`.
+*/
+, linuxStructuredExtraConfig ? with lib.kernel; {
+    MODULES = no;
+    NFS_FS = no;
+    KVM = yes;
+    NONPORTABLE = yes;
+    RISCV_SBI_V01 = yes;
+    SERIO_LIBPS2 = yes;
+    SERIAL_UARTLITE = yes;
+    SERIAL_UARTLITE_CONSOLE = yes;
+    HVC_RISCV_SBI = yes;
+    STACKTRACE = yes;
+    RCU_CPU_STALL_TIMEOUT = freeform "300";
+    CMDLINE = freeform "norandmaps";
+  }
+
+/**
+<arg>linuxKernelPatches</arg>: The linux kernelPatches
+* **Type**: list of attrs ([{name = xxx; patch = xxx; extraConfig = xxx;} ...])
+* **Default values:**: # TODO: panic_shutdown.patch
+* **Node**:
+  The `patch` is a patch file that can be applied by patch executable to linux source code.
+  The `extraConfig` is linux configs, each line of which is in string form without the CONFIG_ prefix.
+*/
+, linuxKernelPatches ? [(import ./imgBuilder/linux/enable-clint.patch.nix)]
+
 , ...
 }:
 assert lib.assertOneOf "cores" cores ["1" "2"];
@@ -115,7 +164,8 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
 
   linux = callPackage ./imgBuilder/linux {
     inherit (self) initramfs;
-    riscv64-linux = riscv64-pkgs.linux;
+    riscv64-linux = riscv64-pkgs.linuxKernel.kernels."linux_${linuxVersion}";
+    inherit linuxStructuredExtraConfig linuxKernelPatches;
   };
 
   dts = callPackage ./imgBuilder/opensbi/dts { inherit cores; };
