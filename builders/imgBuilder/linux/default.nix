@@ -1,68 +1,60 @@
-{ stdenv
-, runCommand
-, writeText
-, bc
-, flex
-, bison
+{ lib
 
-, riscv64-cc
+, riscv64-stdenv
 , rmExt
+
 , initramfs
-}@args: stdenv.mkDerivation (finalAttrs: {
+, riscv64-linux
+, enableModules ? false
+# The `override` is overriding the arguments of pkgs/os-specific/linux/kernel/mainline.nix
+# The `argsOverride` attr is overriding the makeOverridable attrs of pkgs/os-specific/linux/kernel/generic.nix
+# The `overrideAttrs` is overriding derivation built by pkgs/os-specific/linux/kernel/manual-config.nix
+}@args: (riscv64-linux.override { argsOverride = {
+  stdenv = riscv64-stdenv;
+  kernelPatches = [rec {
+    name = "enable-clint";
+    patch = builtins.toFile name ''
+      --- a/drivers/clocksource/Kconfig
+      +++ b/drivers/clocksource/Kconfig
+      @@ -643,7 +643,7 @@
+       	  required for all RISC-V systems.
+
+       config CLINT_TIMER
+      -	bool "CLINT Timer for the RISC-V platform" if COMPILE_TEST
+      +	bool "CLINT Timer for the RISC-V platform"
+       	depends on GENERIC_SCHED_CLOCK && RISCV
+       	select TIMER_PROBE
+       	select TIMER_OF
+    '';
+    extraConfig = ''
+      CLINT_TIMER y
+    '';
+  }];
+  ignoreConfigErrors = false;
+  enableCommonConfig = false;
+  structuredExtraConfig = with lib.kernel; {
+    MODULES = if enableModules then yes else no;
+    NFS_FS = no;
+    KVM = yes;
+    NONPORTABLE = yes;
+    RISCV_SBI_V01 = yes;
+    SERIO_LIBPS2 = yes;
+    SERIAL_UARTLITE = yes;
+    SERIAL_UARTLITE_CONSOLE = yes;
+    HVC_RISCV_SBI = yes;
+    STACKTRACE = yes;
+    RCU_CPU_STALL_TIMEOUT = freeform "300";
+    CMDLINE = freeform "norandmaps";
+    INITRAMFS_SOURCE = freeform (builtins.toString initramfs);
+  };};
+}).overrideAttrs (old: {
   name = "${rmExt initramfs.name}.linux";
-  src = builtins.fetchurl {
-    url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.10.7.tar.xz";
-    sha256 = "1adkbn6dqbpzlr3x87a18mhnygphmvx3ffscwa67090qy1zmc3ch";
-  };
-  buildInputs = [
-    bc
-    flex
-    bison
-    riscv64-cc
-  ];
-
-  patches = [
-    # Shutdown QEMU when the kernel raises a panic.
-    # This feature prevents the kernel from entering an endless loop,
-    # allowing for quicker identification of failed SPEC CPU testCases.
-    ./panic_shutdown.patch
-  ];
-
-  defconfig = runCommand "defconfig" {} ''
-    path=$(tar tf ${finalAttrs.src} | grep arch/riscv/configs/defconfig)
-    tar xf ${finalAttrs.src} $path -O > $out
+  # `postInstall` in pkgs/os-specific/linux/kernel/manual-config.nix is depends on `isModular`, which is a good design.
+  # However, pkgs/os-specific/linux/kernel/generic.nix hardcode the config = {CONFIG_MODULES = "y";} which is not generic and is a bad design.
+  # Here, we correct the `postInstall` by checking enableModules.
+  postInstall = if enableModules then old.postInstall else ''
+    mkdir -p $dev
+    cp vmlinux $dev/
   '';
-  baseconfig = runCommand "baseconfig" {} ''
-    sed '/=m/d' ${finalAttrs.defconfig} | sed '/NFS/d' | sed '/CONFIG_FTRACE/d' > $out
-  '';
-  # TODO: auto deduplicate and merge xiangshan_defconfig to baseconfig
-  xiangshan_defconfig = writeText "xiangshan_defconfig" ''
-    ${builtins.readFile finalAttrs.baseconfig}
-    CONFIG_KVM=y
-    CONFIG_LOG_BUF_SHIFT=15
-    CONFIG_NONPORTABLE=y
-    CONFIG_RISCV_SBI_V01=y
-    CONFIG_SERIO_LIBPS2=y
-    CONFIG_SERIAL_UARTLITE=y
-    CONFIG_SERIAL_UARTLITE_CONSOLE=y
-    CONFIG_HVC_RISCV_SBI=y
-    CONFIG_STACKTRACE=y
-    CONFIG_RCU_CPU_STALL_TIMEOUT=300
-    CONFIG_CMDLINE="norandmaps"
-    CONFIG_INITRAMFS_SOURCE="${initramfs}"
-  '';
-
-  buildPhase = ''
-    export ARCH=riscv
-    export CROSS_COMPILE=riscv64-unknown-linux-gnu-
-
-    export KBUILD_BUILD_TIMESTAMP=@0
-    ln -s ${finalAttrs.xiangshan_defconfig} arch/riscv/configs/xiangshan_defconfig
-    make xiangshan_defconfig
-    make -j $NIX_BUILD_CORES
-  '';
-  installPhase = ''
-    cp arch/riscv/boot/Image $out
-  '';
-  passthru = args;
+  passthru = args // old.passthru;
 })

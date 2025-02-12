@@ -113,7 +113,10 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
     overlays = self.initramfs_overlays;
   };
 
-  linux = callPackage ./imgBuilder/linux { inherit (self) initramfs; };
+  linux = callPackage ./imgBuilder/linux {
+    inherit (self) initramfs;
+    riscv64-linux = riscv64-pkgs.linux;
+  };
 
   dts = callPackage ./imgBuilder/opensbi/dts { inherit cores; };
   opensbi = callPackage ./imgBuilder/opensbi { inherit (self) dts linux; };

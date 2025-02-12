@@ -25,7 +25,7 @@
     "CROSS_COMPILE=riscv64-unknown-linux-gnu-"
     "PLATFORM=generic"
     "FW_FDT_PATH=${dts}/xiangshan.dtb"
-    "FW_PAYLOAD_PATH=${linux}"
+    "FW_PAYLOAD_PATH=${linux}/Image"
   ];
   buildPhase = ''
     patchShebangs .
@@ -48,7 +48,7 @@
     # Calculate the FW_PAYLOAD_FDT_OFFSET
     ALIGN=0x200000
     FW_PAYLOAD_OFFSET=0x100000
-    IMAGE_SIZE=$(ls -l ${linux} | awk '{print $5}')
+    IMAGE_SIZE=$(ls -l ${linux}/Image | awk '{print $5}')
     IMAGE_END=$((FW_PAYLOAD_OFFSET + IMAGE_SIZE))
     IMAGE_END_ALIGNED=$(( (IMAGE_END + ALIGN-1) & ~(ALIGN-1) ))
     IMAGE_END_ALIGNED_HEX=$(printf "0x%x" $IMAGE_END_ALIGNED)
