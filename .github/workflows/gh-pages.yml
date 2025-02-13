@@ -4,9 +4,6 @@ on:
     branches:
       # push to data branch will not trigger this workflow
       - main
-    paths:
-      # only changes in docs/ will trigger this workflow
-      - "docs/**"
 jobs:
   deploy-github-pages:
     runs-on: ubuntu-latest
