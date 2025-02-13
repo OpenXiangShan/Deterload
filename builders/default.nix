@@ -115,12 +115,15 @@ cores ? "1"
 /**
 <arg>linuxKernelPatches</arg>: The linux kernelPatches
 * **Type**: list of attrs ([{name = xxx; patch = xxx; extraConfig = xxx;} ...])
-* **Default values:**: # TODO: panic_shutdown.patch
+* **Default values:**: ./imgBuilder/linux/patches/*.nix
 * **Node**:
   The `patch` is a patch file that can be applied by patch executable to linux source code.
-  The `extraConfig` is linux configs, each line of which is in string form without the CONFIG_ prefix.
+  The optional `extraConfig` is linux configs, each line of which is in string form without the CONFIG_ prefix.
 */
-, linuxKernelPatches ? [(import ./imgBuilder/linux/enable-clint.patch.nix)]
+, linuxKernelPatches ? [
+    (import ./imgBuilder/linux/patches/enable-clint.nix)
+    (import ./imgBuilder/linux/patches/panic_shutdown.nix)
+  ]
 
 , ...
 }:

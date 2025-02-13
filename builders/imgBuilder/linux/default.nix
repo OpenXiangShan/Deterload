@@ -25,6 +25,7 @@
   # Here, we correct the `postInstall` by checking linuxStructuredExtraConfig.
   postInstall = if linuxStructuredExtraConfig?MODULES
                 && linuxStructuredExtraConfig.MODULES==lib.kernel.yes
+  # The generated vmlinux (Image is stripped binary, vmlinux is ELF with debug info) is located in linux.dev
   then old.postInstall else ''
     mkdir -p $dev
     cp vmlinux $dev/
