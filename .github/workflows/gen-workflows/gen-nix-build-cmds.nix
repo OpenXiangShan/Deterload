@@ -39,7 +39,7 @@
       # optsStrList = [ "--argstr cores 1 --argstr linuxVersion default -A cpt ..." ... ]
       optsStrList = import ./test-opts-to-strlist.nix {} test-opts;
       # cmdStrList = [ "nix-build <abspath>/examples/nyancat --argstr cores 1 --argstr linuxVersion default -A cpt ..." ... ]
-      cmdStrList = map (optsStr: "nix-build ${examplesDir} ${optsStr}") optsStrList;
+      cmdStrList = map (optsStr: "nix-build ${toString examplesDir} ${optsStr}") optsStrList;
     in cmdStrList
   ) examplesDirs;
 in lib.flatten cmdStrListL2
