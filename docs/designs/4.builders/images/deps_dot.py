@@ -111,8 +111,8 @@ class Output(CCluster):
     self.stage1_profiling = addNode(self._level3_, "stage1-profiling"); set_colors.cptBuilder(self.stage1_profiling)
     self.stage2_cluster = addNode(self._level3_, "stage2-cluster"); set_colors.cptBuilder(self.stage2_cluster)
     self.stage3_checkpoint = addNode(self._level3_, "stage3-checkpoint"); set_colors.cptBuilder(self.stage3_checkpoint)
-    self.cpt = addNode(self._level3_, "cpt"); set_colors.cptBuilder(self.cpt)
-    cpt_e = addEdge(self._level3_, self.stage3_checkpoint, self.cpt, constraint=False, dir="none")
+    self.cpts_simpoint = addNode(self._level3_, "cpts-simpoint"); set_colors.cptBuilder(self.cpts_simpoint)
+    cpt_e = addEdge(self._level3_, self.stage3_checkpoint, self.cpts_simpoint, constraint=False, dir="none")
     cpt_e.set("color", f"{cpt_e.get('color')}:transparent:{cpt_e.get('color')}")
 
 
@@ -146,7 +146,7 @@ addFlatEdge(graph, builder.cptBuilder.simpoint, output.simpoint)
 addFlatEdge(graph, builder.cptBuilder.stage1_profiling, output.stage1_profiling)
 addFlatEdge(graph, builder.cptBuilder.stage2_cluster, output.stage2_cluster)
 addFlatEdge(graph, builder.cptBuilder.stage3_checkpoint, output.stage3_checkpoint)
-addFlatEdge(graph, builder.cptBuilder.stage3_checkpoint, output.cpt)
+addFlatEdge(graph, builder.cptBuilder.stage3_checkpoint, output.cpts_simpoint)
 
 overrideScope = addNode(outputs, "overrideScope", shape="oval", color="black", penwidth=2, fontsize=20)
 addEdge(outputs, overrideScope, output, constraint=False)

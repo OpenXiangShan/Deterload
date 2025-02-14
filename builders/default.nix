@@ -218,7 +218,7 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
   #   checkpoint_log = "checkpoint.log";
   #   smp = cores;
   #   maxK
-  cpt = callPackage ./cptBuilder {
+  cpts-simpoint = callPackage ./cptBuilder {
     inherit (self) stage3-checkpoint;
   };
 

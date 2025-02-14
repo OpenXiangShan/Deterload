@@ -15,16 +15,16 @@ let
     * Configure by CLI:
       * `nom-build ... --arg <key> <value> ...`
       * `nom-build ... --argstr <key> <strvalue> ...`
-      * E.g: Generate spec2006 checkpoints using given source code:
-        * `nom-build examples/spec2006/ --arg src <PATH_TO_SPEC2006> -A cpt`
+      * E.g: Generate spec2006 simpoint-guided checkpoints using given source code:
+        * `nom-build examples/spec2006/ --arg src <PATH_TO_SPEC2006> -A cpts-simpoint`
     * Configure by a file: see `examples/*/config.nix`
 
     ## Generation
 
-    * Generate the checkpoints for a given <benchmark> into `result/`:
-      * `nom-build examples/<benchmark> -A cpt`
-      * E.g: Generate checkpoints for openblas:
-        * `nom-build examples/openblas -A cpt`
+    * Generate the simpoint-guided checkpoints for a given <benchmark> into `result/`:
+      * `nom-build examples/<benchmark> -A cpts-simpoint`
+      * E.g: Generate simpoint-guided checkpoints for openblas:
+        * `nom-build examples/openblas -A cpts-simpoint`
 
     ## Documentation
 
