@@ -1,4 +1,6 @@
 { lib
+, runCommand
+, rmExt
 , callPackage
 , riscv64-pkgs
 , riscv64-stdenv
@@ -220,6 +222,16 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
   #   maxK
   cpts-simpoint = callPackage ./cptBuilder {
     inherit (self) stage3-checkpoint;
+  };
+
+  # checkpoint when instruction count = 0
+  cpt-0th = self.stage3-checkpoint.override {
+    stage2-cluster = runCommand
+    "${rmExt self.stage2-cluster.name}.afterLinuxBoot_cluster" {} ''
+      mkdir -p $out
+      echo 0 0 > $out/simpoints0
+      echo 1 0 > $out/weights0
+    '';
   };
 
   sim = callPackage ./sim.nix {

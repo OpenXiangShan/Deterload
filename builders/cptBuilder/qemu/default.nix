@@ -52,11 +52,14 @@ stdenv.mkDerivation {
   patches = [
     ./allow_get_icount_anytime.patch
   ];
-  postPatch = ''
-    # do not disable timer
+  postPatch =
+  /* do not disable timer interrupt */ ''
     sed -i 's/nemu_trap_count == 2/nemu_trap_count == 1/g' contrib/plugins/profiling.c
-    # disable sync cpus in multicore checkpoint
+  '' /* disable sync cpus in multicore checkpoint */ + ''
     sed -i 's/bool sync_end = false;/bool sync_end = true;/g' target/riscv/multicore.c
+  '' /* fix bug that not taking 0th checkpoint */ + ''
+    sed -i '/if (first_insns_item->data == 0) {/,/^        }$/d' target/riscv/multicore.c
+    sed -i 's/limit_instructions==0/\&ns->sync_info.online_cpus==0/' target/riscv/serializer.c
   '';
 
   buildInputs = [
