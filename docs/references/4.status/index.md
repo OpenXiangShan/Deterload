@@ -1,3 +1,6 @@
+This page will be deprecated in future, due to it requiring a serial execution of workflows.
+Otherwise, simultaneous workflows compete to git merge the `data` branch.
+
 # 构建状态（Build Status）
 
 下面的表格展示构建出工作负载的状态，具体说明如下：
