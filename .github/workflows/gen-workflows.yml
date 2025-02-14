@@ -1,0 +1,27 @@
+name: gen-workflows
+on:
+  push:
+    branches:
+      - main
+jobs:
+  gen-workflows:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v27
+        with:
+          nix_path: nixpkgs=channel:nixos-24.11
+      - run: nix-build .github/workflows/gen-workflows
+      - name: make change to workflows file
+        run: |
+          cp result .github/workflows/generated-build-deterload.yml
+          git add .
+          git config --global user.name xieby1-gen-workflows
+          git config --global user.email "xieby1@gen.workflows"
+          git commit -m "gen workflows for $(git rev-parse HEAD)"
+          git merge origin/actions -s ours -m "merge $(git rev-parse HEAD)"
+          git push origin HEAD:actions
