@@ -19,8 +19,8 @@ let
   CPU2006LiteWrapper = fetchFromGitHub {
     owner = "OpenXiangShan";
     repo = "CPU2006LiteWrapper";
-    rev = "010ca8fe8bf229c68443a2dd1766e1be62fa7998";
-    hash = "sha256-qNxmM9Dmobr6fvTZapacu8jngcBPRbybwayTi7CZGd0=";
+    rev = "6651ffc5127d7391e2741c84f367c59bf4156c16";
+    hash = "sha256-v24FLtKjZFYPxrDaiwY4BA10893J9uCNax/PGpKNjFE=";
   };
 in stdenv.mkDerivation {
   name = utils.escapeName (builtins.concatStringsSep "_" [
