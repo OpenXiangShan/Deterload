@@ -1,0 +1,182 @@
+jobs:
+  job0:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: nix-build ./examples/hello-nolibc --argstr cores 1 -A cpt-0th
+    timeout-minutes: 10080
+  job1:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: nix-build ./examples/hello-nolibc --argstr cores 1 -A sim
+    timeout-minutes: 10080
+  job10:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: 'nix-build ./examples/spec2006 --argstr cores 1 --arg enableVector true
+        --arg src /spec2006.tar.gz '
+    timeout-minutes: 10080
+  job11:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: 'nix-build ./examples/spec2006 --argstr cores 1 --arg enableVector false
+        --arg src /spec2006.tar.gz '
+    timeout-minutes: 10080
+  job12:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: 'nix-build ./examples/spec2006 --argstr cores 2 --arg enableVector true
+        --arg src /spec2006.tar.gz '
+    timeout-minutes: 10080
+  job13:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: 'nix-build ./examples/spec2006 --argstr cores 2 --arg enableVector false
+        --arg src /spec2006.tar.gz '
+    timeout-minutes: 10080
+  job2:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: nix-build ./examples/hello-nolibc --argstr cores 2 -A cpt-0th
+    timeout-minutes: 10080
+  job3:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: nix-build ./examples/hello-nolibc --argstr cores 2 -A sim
+    timeout-minutes: 10080
+  job4:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: 'nix-build ./examples/nyancat --argstr cores 1 '
+    timeout-minutes: 10080
+  job5:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: 'nix-build ./examples/nyancat --argstr cores 2 '
+    timeout-minutes: 10080
+  job6:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: 'nix-build ./examples/openblas --argstr TARGET RISCV64_GENERIC --argstr
+        cores 1 '
+    timeout-minutes: 10080
+  job7:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: 'nix-build ./examples/openblas --argstr TARGET RISCV64_GENERIC --argstr
+        cores 2 '
+    timeout-minutes: 10080
+  job8:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: 'nix-build ./examples/openblas --argstr TARGET RISCV64_ZVL128B --argstr
+        cores 1 '
+    timeout-minutes: 10080
+  job9:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: 'nix-build ./examples/openblas --argstr TARGET RISCV64_ZVL128B --argstr
+        cores 2 '
+    timeout-minutes: 10080
+  quick-test:
+    runs-on:
+    - self-hosted
+    - Linux
+    - X64
+    - nix
+    - spec2006
+    steps:
+    - uses: actions/checkout@v4
+    - run: "for example in examples/*/default.nix; do\n  nix-instantiate $example\
+        \ --arg src $(ls -d /spec2006* | head -n1) -A cpt\ndone\n"
+name: build-deterload
+'on':
+  push:
+    branches:
+    - actions
+    paths:
+    - '**'
+    - '!docs/**'
