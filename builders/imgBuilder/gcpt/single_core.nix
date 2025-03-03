@@ -17,7 +17,7 @@
   ];
   makeFlags = [
     "CROSS_COMPILE=riscv64-unknown-linux-gnu-"
-    "GCPT_PAYLOAD_PATH=${opensbi}"
+    "GCPT_PAYLOAD_PATH=${opensbi}/fw_payload.bin"
   ];
   installPhase = ''
     cp build/gcpt.bin $out

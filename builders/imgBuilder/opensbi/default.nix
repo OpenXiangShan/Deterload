@@ -59,8 +59,12 @@
       FW_PAYLOAD_FDT_OFFSET=$IMAGE_END_ALIGNED_HEX
   '';
 
+  outputs = [ "out" "dev" ];
   installPhase = ''
-    cp build/platform/generic/firmware/fw_payload.bin $out
+    mkdir -p $out
+    cp build/platform/generic/firmware/fw_payload.bin $out/
+    mkdir -p $dev
+    cp build/platform/generic/firmware/fw_payload.elf $dev/
   '';
   passthru = args;
 }
