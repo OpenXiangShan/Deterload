@@ -4,3 +4,4 @@
 * mv rmExt to utils
 * Generate checkpoint by function name.
   * This can be implemented during TCG generating translated blocks.
+* unify qemu command in multiple nix files
