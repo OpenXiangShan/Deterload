@@ -125,6 +125,7 @@ cores ? "1"
 , linuxKernelPatches ? [
     (import ./imgBuilder/linux/patches/enable-clint.nix)
     (import ./imgBuilder/linux/patches/panic_shutdown.nix)
+    (import ./imgBuilder/linux/patches/relaxing_random_entropy.nix)
   ]
 
 , ...

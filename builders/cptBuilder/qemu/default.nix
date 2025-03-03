@@ -60,6 +60,8 @@ stdenv.mkDerivation {
   '' /* fix bug that not taking 0th checkpoint */ + ''
     sed -i '/if (first_insns_item->data == 0) {/,/^        }$/d' target/riscv/multicore.c
     sed -i 's/limit_instructions==0/\&ns->sync_info.online_cpus==0/' target/riscv/serializer.c
+  '' /* fix: sstc is disabled in nemu machine if not provide_rdtime*/ + ''
+    sed -i 's/RISCV_ACLINT_DEFAULT_TIMEBASE_FREQ, false/RISCV_ACLINT_DEFAULT_TIMEBASE_FREQ, true/' hw/riscv/nemu.c
   '';
 
   buildInputs = [
