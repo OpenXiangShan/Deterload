@@ -34,15 +34,13 @@ stdenv.mkDerivation {
   src = fetchFromGitHub {
     owner = "OpenXiangShan";
     repo = "NEMU";
-    # latest checkpoint branch
-    rev = "cf24515c85f5be898687959ab299ea276dbd7c56";
-    hash = "sha256-m6hNgEXnhTmwwFOCuZ7gBRnrCNbfdExGIJsAfbhnwa0=";
+    rev = "3b2a4b4acf410efabcb024f43bad438346e0da12";
+    hash = "sha256-3resMrcTgFJapKzc0b/9HNVaXWqd78/0Zd90SI2/NIY=";
   };
   buildInputs = [
     git
     zlib
     which
-    # ccache
     zstd
     readline
     ncurses
@@ -64,7 +62,7 @@ stdenv.mkDerivation {
 
       # Build NEMU
       export NEMU_HOME=$PWD
-      
+
       # Disable ccache
       export USE_CCACHE=
       export CCACHE_DISABLE=1
@@ -90,7 +88,7 @@ stdenv.mkDerivation {
       mkdir -p resource/softfloat/repo/build/Linux-x86_64-GCC
       chmod -R u+w resource/softfloat/repo/build
 
-      make -j 100
+      make -j $NIX_BUILD_CORES
 
       echo "Build phase completed"
     '';
