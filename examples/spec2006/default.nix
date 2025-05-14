@@ -133,8 +133,8 @@ let
       ];
       preBuild = ''
         # Add weak attribute to C++ operators, same as jemalloc_cpp.patch
-        sed -i 's/void \*operator new(size_t)/void *operator new(size_t) __attribute__((weak))/g' src/jemalloc_cpp.cpp
-        sed -i 's/void operator delete(void \*)/void operator delete(void *) __attribute__((weak))/g' src/jemalloc_cpp.cpp
+        sed -i '/void/N;s/void[[:space:]]*\*[[:space:]]*operator new/void __attribute__((weak)) *operator new/g' src/jemalloc_cpp.cpp
+        sed -i '/void/N;s/void[[:space:]]*operator delete/void __attribute__((weak)) operator delete/g' src/jemalloc_cpp.cpp
       '';
       # Ensure static libraries are installed
       postInstall = ''

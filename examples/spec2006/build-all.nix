@@ -75,6 +75,7 @@ in stdenv.mkDerivation {
     export CFLAGS="$CFLAGS -static -Wno-format-security -I${riscv64-jemalloc}/include "
     export CXXFLAGS="$CXXFLAGS -static -Wno-format-security -I${riscv64-jemalloc}/include"
     export LDFLAGS="$LDFLAGS -static -ljemalloc -L${riscv64-jemalloc}/lib"
+    export LIBS="${riscv64-jemalloc}/lib/libjemalloc.a"
 
     pushd $SPEC && source shrc && popd
     make copy-all-src
