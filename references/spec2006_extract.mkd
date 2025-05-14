@@ -1,0 +1,96 @@
+<arg>enableVector</arg>: Controls compiler's auto-vectorization during benchmark builds.
+* **Type**: bool
+* **Default value**: `false`
+
+<arg>src</arg>: Path to SPEC CPU 2006 source code.
+* <span style="background-color:yellow;">**Note**</span>:
+  As SPEC CPU 2006 is a proprietary benchmark, it cannot be incorporated in Deterload's source code.
+  You need to obatin the its source code through legal means.
+* **Type**: path
+* **Supported path types**:
+  * Path to a folder:
+
+    The folder must be the root directory of the SPEC CPU 2006 source code.
+
+    Example:
+    ```nix
+    src = /path/miao/spec2006;
+    ```
+
+    Required folder structure:
+    ```
+    /path/miao/spec2006
+    ├── benchspec/
+    ├── bin/
+    ├── tools/
+    ├── shrc
+    ...
+    ```
+
+  * Path to a tar file:
+
+    The tar file must contain a folder named exactly `spec2006`,
+    with the same folder structure as above.
+
+    Supported tar file extensions:
+    * gzip (.tar.gz, .tgz or .tar.Z)
+    * bzip2 (.tar.bz2, .tbz2 or .tbz)
+    * xz (.tar.xz, .tar.lzma or .txz)
+
+    Example:
+    ```nix
+    src = /path/of/spec2006.tar.gz;
+    ```
+
+  * For more information about supported path types,
+    please see [Nixpkgs Manual: The unpack phase](https://nixos.org/manual/nixpkgs/stable/#ssec-unpack-phase).
+
+<arg>size</arg>: Input size for SPEC CPU 2006.
+* **Type**: string
+* **Default value**: `"ref"`
+* **Available values**: `"ref"`, `"train"`, `"test"`
+
+<arg>optimize</arg>: Compiler optimization flags for SPEC CPU 2006.
+* **Type**: string
+* **Default value**: `"-O3 -flto"`
+
+<arg>march</arg>: Compiler's `-march` option for SPEC CPU 2006.
+* **Type**: string
+* **Default value**: "rv64gc${lib.optionalString enableVector "v"}"
+* **Description**: The default value depends on `enableVector`:
+  * If `enableVector` is `true`, the default value is `"rv64gc"`,
+  * If `enableVector` is `false`, the default value is `"rv64gcv"`.
+
+<arg>testcase-filter</arg>: Function to filter SPEC CPU 2006 testcases.
+* **Type**: string -> bool
+* **Default value**: `testcase: true`
+* **Description**: `testcase-filter` takes a testcase name as input and returns:
+  * `true`: include this testcase
+  * `false`: exclude this testcase
+* **Example 1**: Include all testcases:
+  ```nix
+  testcase-filter = testcase: true;
+  ```
+* **Example 2**: Only include `403_gcc`:
+  ```nix
+  testcase-filter = testcase: testcase == "403_gcc";
+  ```
+* **Example 3**: Exlcude `464_h264ref` and `465_tonto`:
+  ```nix
+  testcase-filter = testcase: !(builtins.elem testcase [
+    "464_h264ref"
+    "465_tonto"
+  ]);
+  ```
+
+<arg>per-bmk-maxK</arg>: maxK values for specifed benchmarks in checkpoint generation.
+* **Type**: attr (`{ benchmark-name = number-in-string; ... }`)
+* **Default value**: `{ "483_xalancbmk" = "100"; }`
+* **Description**:
+  `per-bmk-maxK` sets the the maxK for specifed benchmarks.
+  Unspecified benchmarks will use the value from `cpt-maxK`.
+  This attribute consists of key-value pairs where:
+  * Key: benchmark name.
+  * Value: number in a string (same format as `cpt-maxK`).
+* **FAQ**: Why set maxK of 483_xalancbmk to 100?
+  * Setting maxK to 30 for 483_xalancbmk resulted in unstable scores.

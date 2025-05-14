@@ -1,0 +1,473 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>可配参数（Configurable Arguments） - ❄ 确定性负载（Deterload）❄</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><li class="part-title">🏠入门（Get Started）</li><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> README.md</a></li><li class="chapter-item expanded affix "><li class="part-title">📝使用（Usages）</li><li class="chapter-item expanded "><a href="../usages/1.building_outputs.html"><strong aria-hidden="true">2.</strong> 构建工作负载（Building Workloads）</a></li><li class="chapter-item expanded "><a href="../usages/4.running/index.html"><strong aria-hidden="true">3.</strong> 运行工作负载（Running Workloads）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../usages/4.running/emulators.html"><strong aria-hidden="true">3.1.</strong> 仿真器（Emulators）</a></li><li class="chapter-item expanded "><a href="../usages/4.running/gem5.html"><strong aria-hidden="true">3.2.</strong> GEM5</a></li><li class="chapter-item expanded "><a href="../usages/4.running/nemu.html"><strong aria-hidden="true">3.3.</strong> NEMU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">🖊️设计（Designs）</li><li class="chapter-item expanded "><a href="../designs/1.overview.html"><strong aria-hidden="true">4.</strong> 概览（Overview）</a></li><li class="chapter-item expanded "><a href="../designs/2.configuration_system.html"><strong aria-hidden="true">5.</strong> 配置系统（Configuration System）</a></li><li class="chapter-item expanded "><a href="../designs/3.benchmarks/index.html"><strong aria-hidden="true">6.</strong> 基准测试（Benchmarks）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../designs/3.benchmarks/openblas.html"><strong aria-hidden="true">6.1.</strong> OpenBLAS</a></li><li class="chapter-item expanded "><a href="../designs/3.benchmarks/spec2006.html"><strong aria-hidden="true">6.2.</strong> SPEC CPU 2006</a></li></ol></li><li class="chapter-item expanded "><a href="../designs/4.builders/index.html"><strong aria-hidden="true">7.</strong> 构建框架（Builders）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../designs/4.builders/1.imgBuilder.html"><strong aria-hidden="true">7.1.</strong> 镜像构建器（Image Builder）</a></li><li class="chapter-item expanded "><a href="../designs/4.builders/2.cptBuilder.html"><strong aria-hidden="true">7.2.</strong> 切片构建器（Checkpoint Builder）</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">🗂️参考（References）</li><li class="chapter-item expanded "><a href="../references/1.configurable.html" class="active"><strong aria-hidden="true">8.</strong> 可配参数（Configurable Arguments）</a></li><li class="chapter-item expanded "><a href="../references/2.benchmarks_scope.html"><strong aria-hidden="true">9.</strong> 基准测试围（Benchmarks Scope）</a></li><li class="chapter-item expanded "><a href="../references/3.builders_scope.html"><strong aria-hidden="true">10.</strong> 构建器围（Builders Scope）</a></li><li class="chapter-item expanded "><a href="../references/4.status/index.html"><strong aria-hidden="true">11.</strong> </a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">❄ 确定性负载（Deterload）❄</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/OpenXiangShan/Deterload" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="可配参数configurable-arguments"><a class="header" href="#可配参数configurable-arguments">可配参数（Configurable Arguments）</a></h1>
+<style>
+arg {
+  font-family: mono;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+arg::before {
+  content: "• "
+}
+</style>
+<h2 id="共通common"><a class="header" href="#共通common">共通（Common）</a></h2>
+<p><arg>cc</arg>: Compiler Collection used for compiling RISC-V binaries.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: <code>"gcc14"</code></li>
+<li><strong>Available values</strong>: Prefix of any nixpkgs-supported <u>xxx</u>Stdenv.
+To list available <u>xxx</u>Stdenv:
+<pre><code class="language-bash">nix-instantiate --eval -E 'let pkgs=import &lt;nixpkgs&gt; {}; in builtins.filter (x: pkgs.lib.hasSuffix "Stdenv" x)(builtins.attrNames pkgs)'
+</code></pre>
+</li>
+<li><strong>TODO</strong>: Currently only supports GCC's stdenv.
+LLVM's fortran compiler (flang) is needed to support Clang's stdenv.
+Preliminary experiments with riscv64-jemalloc show that Clang provides better auto-vectorization than GCC.</li>
+</ul>
+<h2 id="构建器builders"><a class="header" href="#构建器builders">构建器（Builders）</a></h2>
+<p><arg>cores</arg>: Number of cores.</p>
+<ul>
+<li><strong>Type</strong>: number-in-string</li>
+<li><strong>Default value</strong>: <code>"1"</code></li>
+<li><strong>Available values</strong>: <code>"1"</code>, <code>"2"</code>.
+(<a href="https://github.com/OpenXiangShan/LibCheckpoint">LibCheckpoint</a> is still in development,
+its stable configuration current only supports dual core)</li>
+<li><strong>Note</strong>: <code>cpt-simulator</code>: qemu supports multiple cores, however, nemu only supports single core.</li>
+</ul>
+<p><arg>cpt-maxK</arg>: maxK value for all benchmarks in checkpoint generation.</p>
+<ul>
+<li><strong>Type</strong>: number-in-string</li>
+<li><strong>Default value</strong>: <code>"30"</code></li>
+<li><strong>Description</strong>:
+maxK is a parameter in SimPoint algorithm used during the checkpoint's clustering stage.
+<code>cpt-maxK</code> will set maxK for all benchmarks' clustering stage in checkpoints generation.
+To override the maxK for specific benchmarks, refer to the <code>cpt-maxK-bmk</code> argument.</li>
+</ul>
+<p><arg>cpt-intervals</arg>: Number of BBV interval instructions in checkpoint generation.</p>
+<ul>
+<li><strong>Type</strong>: number-in-string</li>
+<li><strong>Default value</strong>: <code>"20000000"</code></li>
+</ul>
+<p><arg>cpt-simulator</arg>: Simulator used in checkpoint generation.</p>
+<ul>
+<li>
+<p><strong>Type</strong>: string</p>
+</li>
+<li>
+<p><strong>Default value</strong>: <code>"qemu"</code></p>
+</li>
+<li>
+<p><strong>Available values</strong>: <code>"qemu"</code>, <code>"nemu"</code></p>
+</li>
+<li>
+<p><strong>Note</strong>:
+Though nemu is faster than qemu,</p>
+<ul>
+<li>nemu does not support multiple cores,</li>
+<li>the current version of nemu is not deterministic.</li>
+</ul>
+<p>Therefore, qemu is chosen as the default simulator.
+For more information, refer to <a href="https://github.com/OpenXiangShan/Deterload/issues/8">OpenXiangShan/Deterload Issue #8: nemu is not deterministic</a>.</p>
+</li>
+</ul>
+<p><arg>cpt-format</arg>: Compress format of output checkpoints.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: <code>"zstd"</code></li>
+<li><strong>Available value</strong>: <code>"zstd"</code>, <code>"gz"</code></li>
+<li><strong>Note</strong>: nemu supports both formats; however, qemu only supports zstd format.</li>
+</ul>
+<p><arg>interactive</arg>: The image is interactive.</p>
+<ul>
+<li><strong>Type</strong>: bool</li>
+<li><strong>Default value</strong>: <code>false</code></li>
+<li><strong>Note</strong>: This argument only use together with <code>-A sim</code> to debug.</li>
+</ul>
+<p><arg>enableTrap</arg>: Whether to incorporate QEMU/NEMU trap in image.</p>
+<ul>
+<li><strong>Type</strong>: bool</li>
+<li><strong>Default value</strong>: <code>true</code></li>
+</ul>
+<p><arg>linuxVersion</arg>: The linux kernel version</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: <code>"default"</code></li>
+<li><strong>Available values</strong>: Suffix of any nixpkgs-supported linuxKernel.kernels.linux_<u>xxx</u>.
+To list available linuxKernel.kernels.linux_<u>xxx</u>:
+<pre><code class="language-bash">nix-instantiate --eval -E 'let pkgs=import &lt;nixpkgs&gt; {}; in builtins.filter (x: pkgs.lib.hasPrefix "linux_" x) (builtins.attrNames pkgs.linuxKernel.kernels)'
+</code></pre>
+</li>
+</ul>
+<p><arg>linuxStructuredExtraConfig</arg>: The extra structured linux config</p>
+<ul>
+<li><strong>Type</strong>: attr (with lib.kernel; {kernelConfigEntry = kernelItem; ...})</li>
+<li><strong>Note1</strong>:
+The syntax of kernelConfigEntry is the entry available is Kconfig.
+In other words, the CONFIG_XXX with "CONFIG_" removed.
+The syntax of kernelItem is lib.kernel.xxx.</li>
+<li><strong>Note2</strong>:
+This argument will used to generate linux config file together with riscv64's defconfig
+and built-in configs in builders/imgBuilder/linux/default.nix.
+The generated config file can be accessed by <code>linux.configfile</code>.</li>
+</ul>
+<p><arg>linuxKernelPatches</arg>: The linux kernelPatches</p>
+<ul>
+<li><strong>Type</strong>: list of attrs ([{name = xxx; patch = xxx; extraConfig = xxx;} ...])</li>
+<li><strong>Default values:</strong>: ./imgBuilder/linux/patches/*.nix</li>
+<li><strong>Node</strong>:
+The <code>patch</code> is a patch file that can be applied by patch executable to linux source code.
+The optional <code>extraConfig</code> is linux configs, each line of which is in string form without the CONFIG_ prefix.</li>
+</ul>
+<h2 id="openblas"><a class="header" href="#openblas">OpenBLAS</a></h2>
+<p><arg>TARGET</arg>: CPU TARGET for OpenBLAS.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: "RISCV64_GENERIC"`</li>
+<li><strong>Available values</strong>: <code>"RISCV64_GENERIC"</code>, <code>"RISCV64_ZVL128B"</code>, <code>"RISCV64_ZVL256B"</code></li>
+</ul>
+<h2 id="spec-cpu-2006"><a class="header" href="#spec-cpu-2006">SPEC CPU 2006</a></h2>
+<p><arg>enableVector</arg>: Controls compiler's auto-vectorization during benchmark builds.</p>
+<ul>
+<li><strong>Type</strong>: bool</li>
+<li><strong>Default value</strong>: <code>false</code></li>
+</ul>
+<p><arg>src</arg>: Path to SPEC CPU 2006 source code.</p>
+<ul>
+<li><span style="background-color:yellow;"><strong>Note</strong></span>:
+As SPEC CPU 2006 is a proprietary benchmark, it cannot be incorporated in Deterload's source code.
+You need to obatin the its source code through legal means.</li>
+<li><strong>Type</strong>: path</li>
+<li><strong>Supported path types</strong>:
+<ul>
+<li>
+<p>Path to a folder:</p>
+<p>The folder must be the root directory of the SPEC CPU 2006 source code.</p>
+<p>Example:</p>
+<pre><code class="language-nix">src = /path/miao/spec2006;
+</code></pre>
+<p>Required folder structure:</p>
+<pre><code>/path/miao/spec2006
+├── benchspec/
+├── bin/
+├── tools/
+├── shrc
+...
+</code></pre>
+</li>
+<li>
+<p>Path to a tar file:</p>
+<p>The tar file must contain a folder named exactly <code>spec2006</code>,
+with the same folder structure as above.</p>
+<p>Supported tar file extensions:</p>
+<ul>
+<li>gzip (.tar.gz, .tgz or .tar.Z)</li>
+<li>bzip2 (.tar.bz2, .tbz2 or .tbz)</li>
+<li>xz (.tar.xz, .tar.lzma or .txz)</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-nix">src = /path/of/spec2006.tar.gz;
+</code></pre>
+</li>
+<li>
+<p>For more information about supported path types,
+please see <a href="https://nixos.org/manual/nixpkgs/stable/#ssec-unpack-phase">Nixpkgs Manual: The unpack phase</a>.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><arg>size</arg>: Input size for SPEC CPU 2006.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: <code>"ref"</code></li>
+<li><strong>Available values</strong>: <code>"ref"</code>, <code>"train"</code>, <code>"test"</code></li>
+</ul>
+<p><arg>optimize</arg>: Compiler optimization flags for SPEC CPU 2006.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: <code>"-O3 -flto"</code></li>
+</ul>
+<p><arg>march</arg>: Compiler's <code>-march</code> option for SPEC CPU 2006.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: "rv64gc${lib.optionalString enableVector "v"}"</li>
+<li><strong>Description</strong>: The default value depends on <code>enableVector</code>:
+<ul>
+<li>If <code>enableVector</code> is <code>true</code>, the default value is <code>"rv64gc"</code>,</li>
+<li>If <code>enableVector</code> is <code>false</code>, the default value is <code>"rv64gcv"</code>.</li>
+</ul>
+</li>
+</ul>
+<p><arg>testcase-filter</arg>: Function to filter SPEC CPU 2006 testcases.</p>
+<ul>
+<li><strong>Type</strong>: string -&gt; bool</li>
+<li><strong>Default value</strong>: <code>testcase: true</code></li>
+<li><strong>Description</strong>: <code>testcase-filter</code> takes a testcase name as input and returns:
+<ul>
+<li><code>true</code>: include this testcase</li>
+<li><code>false</code>: exclude this testcase</li>
+</ul>
+</li>
+<li><strong>Example 1</strong>: Include all testcases:
+<pre><code class="language-nix">testcase-filter = testcase: true;
+</code></pre>
+</li>
+<li><strong>Example 2</strong>: Only include <code>403_gcc</code>:
+<pre><code class="language-nix">testcase-filter = testcase: testcase == "403_gcc";
+</code></pre>
+</li>
+<li><strong>Example 3</strong>: Exlcude <code>464_h264ref</code> and <code>465_tonto</code>:
+<pre><code class="language-nix">testcase-filter = testcase: !(builtins.elem testcase [
+  "464_h264ref"
+  "465_tonto"
+]);
+</code></pre>
+</li>
+</ul>
+<p><arg>per-bmk-maxK</arg>: maxK values for specifed benchmarks in checkpoint generation.</p>
+<ul>
+<li><strong>Type</strong>: attr (<code>{ benchmark-name = number-in-string; ... }</code>)</li>
+<li><strong>Default value</strong>: <code>{ "483_xalancbmk" = "100"; }</code></li>
+<li><strong>Description</strong>:
+<code>per-bmk-maxK</code> sets the the maxK for specifed benchmarks.
+Unspecified benchmarks will use the value from <code>cpt-maxK</code>.
+This attribute consists of key-value pairs where:
+<ul>
+<li>Key: benchmark name.</li>
+<li>Value: number in a string (same format as <code>cpt-maxK</code>).</li>
+</ul>
+</li>
+<li><strong>FAQ</strong>: Why set maxK of 483_xalancbmk to 100?
+<ul>
+<li>Setting maxK to 30 for 483_xalancbmk resulted in unstable scores.</li>
+</ul>
+</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../designs/4.builders/2.cptBuilder.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../references/2.benchmarks_scope.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../designs/4.builders/2.cptBuilder.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../references/2.benchmarks_scope.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

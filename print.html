@@ -1,0 +1,879 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>❄ 确定性负载（Deterload）❄</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><li class="part-title">🏠入门（Get Started）</li><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> README.md</a></li><li class="chapter-item expanded affix "><li class="part-title">📝使用（Usages）</li><li class="chapter-item expanded "><a href="usages/1.building_outputs.html"><strong aria-hidden="true">2.</strong> 构建工作负载（Building Workloads）</a></li><li class="chapter-item expanded "><a href="usages/4.running/index.html"><strong aria-hidden="true">3.</strong> 运行工作负载（Running Workloads）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="usages/4.running/emulators.html"><strong aria-hidden="true">3.1.</strong> 仿真器（Emulators）</a></li><li class="chapter-item expanded "><a href="usages/4.running/gem5.html"><strong aria-hidden="true">3.2.</strong> GEM5</a></li><li class="chapter-item expanded "><a href="usages/4.running/nemu.html"><strong aria-hidden="true">3.3.</strong> NEMU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">🖊️设计（Designs）</li><li class="chapter-item expanded "><a href="designs/1.overview.html"><strong aria-hidden="true">4.</strong> 概览（Overview）</a></li><li class="chapter-item expanded "><a href="designs/2.configuration_system.html"><strong aria-hidden="true">5.</strong> 配置系统（Configuration System）</a></li><li class="chapter-item expanded "><a href="designs/3.benchmarks/index.html"><strong aria-hidden="true">6.</strong> 基准测试（Benchmarks）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="designs/3.benchmarks/openblas.html"><strong aria-hidden="true">6.1.</strong> OpenBLAS</a></li><li class="chapter-item expanded "><a href="designs/3.benchmarks/spec2006.html"><strong aria-hidden="true">6.2.</strong> SPEC CPU 2006</a></li></ol></li><li class="chapter-item expanded "><a href="designs/4.builders/index.html"><strong aria-hidden="true">7.</strong> 构建框架（Builders）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="designs/4.builders/1.imgBuilder.html"><strong aria-hidden="true">7.1.</strong> 镜像构建器（Image Builder）</a></li><li class="chapter-item expanded "><a href="designs/4.builders/2.cptBuilder.html"><strong aria-hidden="true">7.2.</strong> 切片构建器（Checkpoint Builder）</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">🗂️参考（References）</li><li class="chapter-item expanded "><a href="references/1.configurable.html"><strong aria-hidden="true">8.</strong> 可配参数（Configurable Arguments）</a></li><li class="chapter-item expanded "><a href="references/2.benchmarks_scope.html"><strong aria-hidden="true">9.</strong> 基准测试围（Benchmarks Scope）</a></li><li class="chapter-item expanded "><a href="references/3.builders_scope.html"><strong aria-hidden="true">10.</strong> 构建器围（Builders Scope）</a></li><li class="chapter-item expanded "><a href="references/4.status/index.html"><strong aria-hidden="true">11.</strong> </a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">❄ 确定性负载（Deterload）❄</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/OpenXiangShan/Deterload" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="确定性负载deterload"><a class="header" href="#确定性负载deterload">确定性负载（Deterload）</a></h1>
+<p><strong>确定性负载</strong>（Deterload）是一个为香山生态（包括
+<a href="https://docs.xiangshan.cc">香山处理器</a>、
+<a href="https://github.com/OpenXiangShan/NEMU">香山NEMU</a>
+和<a href="https://github.com/OpenXiangShan/GEM5">香山GEM5</a>
+）生成<strong>确定性工作负载</strong>的框架。</p>
+<p><strong>Deterload</strong> is a framework for generating <strong>Deterministic Workloads</strong> for the XiangShan ecosystem (including
+<a href="https://github.com/OpenXiangShan/XiangShan">XiangShan Processor</a>,
+<a href="https://github.com/OpenXiangShan/NEMU">XiangShan NEMU</a>,
+and <a href="https://github.com/OpenXiangShan/GEM5">XiangShan GEM5</a>
+).</p>
+<h2 id="背景background"><a class="header" href="#背景background">背景（Background）</a></h2>
+<p><a href="https://github.com/OpenXiangShan/XiangShan/">香山</a>是一款开源的高性能RISC-V处理器，其核心理念是敏捷开发。
+<a href="https://docs.xiangshan.cc/zh-cn/latest/workloads/overview/">香山的工作负载</a>指运行在香山处理器上的各类程序，是开发、调试、评估、研究时不可或缺的组件。</p>
+<p><a href="https://github.com/OpenXiangShan/XiangShan/">XiangShan</a> is an open-source high-performance RISC-V processor, built around the core concept of agile development.
+<a href="https://docs.xiangshan.cc/zh-cn/latest/workloads/overview/">XiangShan's workloads</a> refer to various programs running on XiangShan processor,
+which are essential components for development, debugging, evaluation, and research.</p>
+<p>为了能更加敏捷地生成各类工作负载，我们开发了Deterload项目。
+Deterload在<a href="https://github.com/xyyy1420/checkpoint_scripts">checkpoint_scripts</a>框架上，引入了<strong>确定性</strong>。
+此外，Deterload不仅支持生成切片镜像，还计划支持香山的各类工作负载，包括非切片镜像和裸机镜像。</p>
+<p>To enable more agile generation of various workloads, we developed the Deterload project.
+Deterload is based on the <a href="https://github.com/xyyy1420/checkpoint_scripts">checkpoint_scripts</a> framework and adds the <strong>deterministic</strong> feature.
+Moreover, Deterload not only supports generating checkpoint images but also plans to support various workloads for XiangShan, including non-checkpoint images and bare-metal images.</p>
+<h2 id="关于确定性about-deterministic"><a class="header" href="#关于确定性about-deterministic">关于“确定性”（About "Deterministic"）</a></h2>
+<p>🤔<strong>什么</strong>是“确定性”？
+😺无论何时何地，两次构建同一个工作负载，都应该得到完全相同的结果！</p>
+<p>🤔<strong>为什么</strong>需要“确定性”？
+😺它能让开发更敏捷。无论何时何地，你都能轻松重现bug和性能异常！</p>
+<p>🤔<strong>如何</strong>实现“确定性”？
+😺使用确定性包管理器<a href="https://nixos.org/">Nix</a>并且控制所有随机性！</p>
+<p>🤔<strong>What</strong> is "Deterministic"?
+😺It means that whenever and wherever building the workload twice should yield the same result!</p>
+<p>🤔<strong>Why</strong> do we need "Deterministic"?
+😺It enables more agile development.
+You can reproduce bugs and performance anomalies anytime, anywhere, without hassle!</p>
+<p>🤔<strong>How</strong> to achieve "Deterministic"?
+😺Using the deterministic package manager <a href="https://nixos.org/">Nix</a> and controlling all possible sources of randomness!</p>
+<h2 id="使用方法usage"><a class="header" href="#使用方法usage">使用方法（Usage）</a></h2>
+<p>Deterload由Nix驱动。
+如果你尚未安装Nix，请参考<a href="https://nixos.org/download/">Nix官方安装指南</a>。</p>
+<p>Deterload is powered by Nix.
+If you haven't installed Nix, please refer to the <a href="https://nixos.org/download/">Nix official installation</a>.</p>
+<pre><code class="language-bash"># 进入nix shell（推荐使用direnv自动进入nix shell）：
+# Enter the nix shell (direnv is recommended for auto entering the nix shell):
+nix-shell
+
+# 用10个线程为&lt;benchmark&gt;生成切片，切片存于result/：
+# Generate checkpoints for &lt;benchmark&gt; using 10 threads, saved in result/:
+nom-build examples/&lt;benchmark&gt; -A cpts-simpoint -j10
+
+# 显示帮助信息：
+# Display help information:
+h
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="构建工作负载building-workloads"><a class="header" href="#构建工作负载building-workloads">构建工作负载（Building Workloads）</a></h1>
+<p>Deterload是一套基于nix开发的工作负载构建系统。
+构建工作负载主要是使用nix，
+你可能会心头一紧，🙀“我就是想构建一些工作负载，还要需要一套新的编程语言/一个包管理器？”。
+😺放轻松！不用担心！
+尽管nix的完整学习曲线较陡峭，
+但在本项目中，你只需要掌握少量直观的nix命令和语法即可。</p>
+<p>Deterload is a workload building system developed based on nix.
+Building workloads mainly involves using nix.
+You might tense up, 🙀 "I just want to build some workloads, why do I need a new programming language/package manager?"
+😺 Relax! Don't worry!
+Although nix has a steep learning curve overall,
+in this project, you only need to master a few intuitive nix commands and syntax.</p>
+<h2 id="基础构建basic-building"><a class="header" href="#基础构建basic-building">基础构建（Basic Building）</a></h2>
+<p>让我们从最简单的例子开始——构建一套OpenBLAS切片。
+只需一行命令：</p>
+<p>Let's start with the simplest example — building an OpenBLAS checkpoint.
+It only takes one command:</p>
+<pre><code class="language-bash">nix-build examples/openblas -A cpts-simpoint
+</code></pre>
+<p>这行命令的组成：</p>
+<ul>
+<li><code>nix-build</code>是nix用于构建包的基础命令</li>
+<li><code>examples/openblas</code>指定了openblas</li>
+<li><code>-A cpts-simpoint</code>指定了构建目标基于simpoint的切片</li>
+<li>提示1：如果你想看详细的构建信息（很酷炫的树形依赖图、任务数统计、时间统计等等），
+你可以将<code>nix-build</code>替换为<code>nom-build</code>（一个<code>nix-build</code>的第三方包装命令`）。</li>
+<li>提示2：其中<code>examples/openblas</code>是一个结构体（nix里被成为attribute set，类似python字典），
+包含了多个OpenBLAS工作负载相关的包，比如<code>-A benchmark</code>、<code>-A linux</code>、<code>-A qemu</code>和<code>-A cpts-simpoint</code>等等。</li>
+<li>提示3：如果你的shell有命令补全功能，<code>nix-build -A</code>敲<kbd>tab</kbd>键能给你补全出openblas里所有的包。
+其中<code>-A cpts-simpoint</code>是我们需要的切片。</li>
+</ul>
+<p>This command consists of:</p>
+<ul>
+<li><code>nix-build</code> is nix's basic command for building packages</li>
+<li><code>examples/openblas</code> specifies openblas</li>
+<li><code>-A cpts-simpoint</code> specifies the build target is checkpoints based on simpoint</li>
+<li>Tip 1: If you want to see detailed build information (cool dependency trees, task statistics, time statistics, etc.),
+you can replace <code>nix-build</code> with <code>nom-build</code> (a third-party wrapper for <code>nix-build</code>).</li>
+<li>Tip 2: Here <code>examples/openblas</code> is a structure (called attribute set in nix, similar to Python dictionary),
+containing multiple OpenBLAS workload-related packages, such as <code>-A benchmark</code>, <code>-A linux</code>, <code>-A qemu</code>, and <code>-A cpts-simpoint</code>, etc.</li>
+<li>Tip 3: If your shell has command completion, pressing <kbd>tab</kbd> after <code>nix-build -A</code> will show all packages in openblas.
+Among these, <code>-A cpts-simpoint</code> is the checkpoint we need.</li>
+</ul>
+<p>构建OpenBLAS的切片需要几个小时。
+构建完成后会输出类似这样的路径：</p>
+<p>Building an OpenBLAS checkpoin takes several hours.
+After completion, it outputs a path like this:</p>
+<pre><code>/nix/store/6rbfs8nx9xiv1s7z5xbi7m6djbkn9sgh-openblas_gcc_1410_RISCV64_GENERIC_glibc_qemu_20M_maxK30_1core_cpt
+</code></pre>
+<p>nix会自动将该路径符号链接到<code>./result</code>。
+你可以通过<code>-o</code>选项来改变默认符号链接的目标地址：</p>
+<p>nix will automatically create a symbolic link to this path at <code>./result</code>.
+You can change the default symbolic link target using the <code>-o</code> option:</p>
+<pre><code class="language-bash">nix-build examples/openblas -A cpts-simpoint -o result-openblas.cpts-simpoint
+</code></pre>
+<p>值得注意的是，这一次构建<code>cpts-simpoint</code>会非常快速。
+这是因为nix采用的确定性构建的机制。
+这一次构建和上一次构建除了名字以外没啥不同，所以nix直接复用之前的构建结果。</p>
+<p>Notably, this second build of <code>cpts-simpoint</code> will be very quick.
+This is due to nix's deterministic build mechanism.
+Since this build is identical to the previous one except for the name, nix directly reuses the previous build result.</p>
+<h2 id="配参数configuring-arguments"><a class="header" href="#配参数configuring-arguments">配参数（Configuring Arguments）</a></h2>
+<p>构建产物的路径名（如上面的例子）包含了多个标签，例如：</p>
+<ul>
+<li>编译器版本（gcc 14.1.0）</li>
+<li>OpenBLAS的目标架构（RISCV64_GENERIC）</li>
+<li>...</li>
+</ul>
+<p>The build output path (as in the example above) contains multiple tags, such as:</p>
+<ul>
+<li>Compiler version (gcc 14.1.0)</li>
+<li>OpenBLAS target architecture (RISCV64_GENERIC)</li>
+<li>...</li>
+</ul>
+<p>这些标签都是默认配置中预设好的参数。
+我们可以根据自己的需求配置参数。
+Deterload支持三种配置方式：</p>
+<ul>
+<li>命令行</li>
+<li>配置文件</li>
+<li>命令行+配置文件</li>
+</ul>
+<p>These tags represent parameters set in the default configuration.
+We can configure these parameters according to our needs.
+Deterload supports three configuration methods:</p>
+<ul>
+<li>Command line</li>
+<li>Configuration file</li>
+<li>Command line + Configuration file</li>
+</ul>
+<h3 id="命令行command-line"><a class="header" href="#命令行command-line">命令行（Command Line）</a></h3>
+<p>使用<code>--arg key value</code>的方式配置参数，例如：</p>
+<p>Configure parameters using <code>--arg key value</code>, for example:</p>
+<pre><code class="language-bash">nix-build examples/openblas --arg cpt-maxK '"10"' -A cpts-simpoint
+</code></pre>
+<ul>
+<li>`--arg cpt-maxK '"10"'：设置simpoint的maxK设为10</li>
+</ul>
+<p>注意：nix对参数类型有严格要求。
+比如<code>cpt-maxK</code>是一个字符串类型的参数，因此接收的参数需要加双引号（额外加单引号是为了shell不要吞掉双引号）。</p>
+<ul>
+<li><code>--arg cpt-maxK '"10"'</code>: Set simpoint's maxK to 10</li>
+</ul>
+<p>Note: nix has strict type requirements for parameters.
+For instance, <code>cpt-maxK</code> is a string parameter, so it needs double quotes (with extra single quotes to prevent shell from stripping the double quotes).</p>
+<p>对于字符串类型的参数，双引号单引号过于麻烦，可以用<code>--argstr key value</code>来简化<code>--arg key '"value"'</code>：</p>
+<p>For string parameters, dealing with double and single quotes is cumbersome, so you can use <code>--argstr key value</code> to simplify <code>--arg key '"value"'</code>:</p>
+<pre><code class="language-bash">nix-build examples/openblas --argstr cpt-maxK 10 -A cpts-simpoint
+</code></pre>
+<h3 id="配置文件configuration-file"><a class="header" href="#配置文件configuration-file">配置文件（Configuration File）</a></h3>
+<p>你可能会想：“我可以把命令行写入写一个shell脚本，岂不是就有了‘配置文件’了嘛”。像这样：</p>
+<p>You might think: "I could write these command lines into a shell script, and that would be a 'configuration file', right?" Like this:</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+# 这是一个难以保证确定性构建的“配置文件”
+# This is a "configuration file" that can't guarantee deterministic builds
+nix-build examples/openblas --argstr cpt-maxK 10 -A cpts-simpoint
+</code></pre>
+<p>这样的“配置文件”并不适合协同开发，因为：</p>
+<ul>
+<li>不同开发者用的Deterload版本可能不同，构建结果难以一致。</li>
+<li>参数名称和含义可能会因版本变化而有所不同。</li>
+</ul>
+<p>This type of "configuration file" isn't suitable for collaborative development because:</p>
+<ul>
+<li>Different developers might use different Deterload versions, making build results inconsistent.</li>
+<li>Parameter names and meanings might change between versions.</li>
+</ul>
+<p>为了解决这些问题，我们可以使用nix来编写配置文件。
+例如，以下是一个与上述命令行等价的配置文件：</p>
+<p>To solve these issues, we can use nix to write configuration files.
+Here's a configuration file equivalent to the above command line:</p>
+<pre><code class="language-nix"># vec_maxK10.nix
+{...}@args: import (builtins.fetchTarball {
+  url = "https://github.com/OpenXiangShan/Deterload/archive/v0.1.4.tar.gz";
+  # nix-prefetch-url --unpack https://github.com/OpenXiangShan/Deterload/archive/v0.1.4.tar.gz
+  sha256 = "0l7bfjqjjlxkg8addgm6gkjv7p1psisv1wy648xwa8nw3nmgaw5d";
+}) ({
+  cpt-maxK = "10";
+} // args)
+</code></pre>
+<p>这段代码主要分成两个部分：</p>
+<ul>
+<li>固定版本的部分：
+<ul>
+<li><code>url</code>设定了Deterload的源码来自GitHub，版本为v0.1.4。</li>
+<li><code>sha256</code>是Deterload v0.1.4源码的sha256值，这个nix确定性构建的关键部分。
+你可以用<code>nix-prefetch-url</code>获取此值（见代码注释）。</li>
+</ul>
+</li>
+<li>配置参数的部分：
+<ul>
+<li>配置了<code>cpt-maxK</code>，具体含义与前文一致。</li>
+</ul>
+</li>
+</ul>
+<p>This code consists of two main parts:</p>
+<ul>
+<li>Version fixing part:
+<ul>
+<li><code>url</code> specifies that Deterload's source code comes from GitHub, version v0.1.4.</li>
+<li><code>sha256</code> is the sha256 value of Deterload v0.1.4 source code, crucial for nix's deterministic building.
+You can get this value using <code>nix-prefetch-url</code> (see code comment).</li>
+</ul>
+</li>
+<li>Parameter configuration part:
+<ul>
+<li>Configures <code>cpt-maxK</code>, with meanings as explained earlier.</li>
+</ul>
+</li>
+</ul>
+<p>将上述代码保存为文件（例如<code>vec_maxK10.nix</code>）。
+每个开发者只需运行以下命令，就能生成二进制级别一致的<code>cpts-simpoint</code>切片：</p>
+<p>Save this code as a file (e.g., <code>vec_maxK10.nix</code>).
+Any developer can run the following command to generate a binary-identical <code>cpts-simpoint</code> checkpoint:</p>
+<pre><code class="language-bash">nix-build vec_maxK10.nix -A cpts-simpoint
+</code></pre>
+<p>比如在我的电脑上获得的结果路径，以及第一个切片的md5sum应该和你得到一样：</p>
+<p>For example, the checkpoint path of the result, and the md5sum of the first checkpoint on my computer should match yours:</p>
+<pre><code class="language-bash"># cd /nix/store/s3wxbj9rcxksn22v9ghlhikf1rvi4ybf-openblas_gcc_1410_RISCV64_ZVL128B_glibc_qemu_20M_maxK10_1core_cpt/miao &amp;&amp; ls
+2  186  2343  3274  4093  4668  5991  6285  6357
+# md5sum 2/_2_0.168009.gz
+43305c3b69822ea9fd34b5e08078ad68  result/miao/2/_2_0.168009.gz
+</code></pre>
+<h3 id="命令行配置文件command-line--configuration-file"><a class="header" href="#命令行配置文件command-line--configuration-file">命令行+配置文件（Command Line + Configuration File）</a></h3>
+<p>Deterload支持命令行+配置文件混合的配置方式。
+以上述<code>vec_maxK10.nix</code>为例，命令行参数的优先级高于配置文件参数：</p>
+<p>Deterload supports mixed configuration using command line and configuration files.
+Using the above <code>vec_maxK10.nix</code> as an example, command line parameters take precedence over configuration file parameters:</p>
+<pre><code>nix-build vec_maxK10.nix --argstr cpt-maxK 20 --argstr cpt-intervals 1000000 -A openblas.cpt
+</code></pre>
+<p>上述命令覆盖了原本配置文件的<code>cpt-maxK</code>改为了<code>"20"</code>，并将<code>cpt-intervals</code>设置为了<code>"1000000"</code>。</p>
+<p>This command overrides the original <code>cpt-maxK</code> in the configuration file to <code>"20"</code> and sets <code>cpt-intervals</code> to <code>"1000000"</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="运行工作负载running-workloads"><a class="header" href="#运行工作负载running-workloads">运行工作负载（Running Workloads）</a></h1>
+<p>TODO:</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="仿真器emulators"><a class="header" href="#仿真器emulators">仿真器（Emulators）</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gem5"><a class="header" href="#gem5">GEM5</a></h1>
+<p>生成的工作负载（例如切片）可以在多个香山平台上运行，包括GEM5、Nemu和香山RTL。</p>
+<p>The generated workloads (e.g. checkpoints) are compatible with multiple XiangShan platforms including GEM5, Nemu, and XiangShan RTL.</p>
+<h2 id="用法usage"><a class="header" href="#用法usage">用法（Usage）</a></h2>
+<p>请按照<a href="https://github.com/OpenXiangShan/GEM5">OpenXiangShan/GEM5</a>仓库中的配置指南进行设置。</p>
+<p>Please follow the configuration guidelines in the <a href="https://github.com/OpenXiangShan/GEM5">OpenXiangShan/GEM5</a> repository.</p>
+<p>注意：生成的切片中已包含恢复代码（见<code>opensbi/default.nix</code>），
+因此不用设置$GCB_RESTORER环境变量。</p>
+<p>Note: The generated checkpoints has included the restorer code (see <code>opensbi/default.nix</code>),
+eliminating the need to set the $GCB_RESTORER environment variable.</p>
+<h2 id="故障排除troubleshooting"><a class="header" href="#故障排除troubleshooting">故障排除（Troubleshooting）</a></h2>
+<p>请考虑在<a href="https://github.com/OpenXiangShan/Deterload/issues">Deterload issues</a>中报告你遇到的问题。</p>
+<p>Please consider reporting your issues in <a href="https://github.com/OpenXiangShan/Deterload/issues">Deterload issues</a>.</p>
+<h3 id="difftest错误difftest-errors"><a class="header" href="#difftest错误difftest-errors">Difftest错误（Difftest Errors）</a></h3>
+<ul>
+<li>
+<p>访问香山GEM5的release页面</p>
+</li>
+<li>
+<p>下载稳定版本的NEMU</p>
+</li>
+<li>
+<p>设置相应的$GCBV_REF_SO环境变量</p>
+</li>
+<li>
+<p>Visit the XiangShan GEM5 releases page</p>
+</li>
+<li>
+<p>Download a stable version of NEMU</p>
+</li>
+<li>
+<p>Set the corresponding <code>$GCBV_REF_SO</code> environment variable</p>
+</li>
+</ul>
+<h3 id="常见运行时问题general-runtime-issues"><a class="header" href="#常见运行时问题general-runtime-issues">常见运行时问题（General Runtime Issues）</a></h3>
+<ul>
+<li>
+<p>在gem5命令前添加<code>gdb --args</code>进行调试</p>
+</li>
+<li>
+<p>在本仓库或香山GEM5仓库中报告问题</p>
+</li>
+<li>
+<p>Debug by prefixing your gem5 command with <code>gdb --args</code></p>
+</li>
+<li>
+<p>Report issues in either this repository or the XiangShan GEM5 repository</p>
+</li>
+</ul>
+<h3 id="部分切片运行失败failures-in-some-checkpoints"><a class="header" href="#部分切片运行失败failures-in-some-checkpoints">部分切片运行失败（Failures in Some Checkpoints）</a></h3>
+<p>虽然目前部分切片可能在GEM5中运行失败（这个问题正在解决中），
+但约90%的切片应该能够正确执行，提供可靠的性能指标。</p>
+<p>While some checkpoints may currently fail in GEM5 (this is being addressed),
+approximately 90% should execute correctly, providing reliable performance metrics.</p>
+<h2 id="分数计算score-calculation"><a class="header" href="#分数计算score-calculation">分数计算（Score Calculation）</a></h2>
+<p>要在使用GEM5运行切片后计算SPEC CPU 2006分数，
+请使用<a href="https://github.com/shinezyy/gem5_data_proc">gem5_data_proc</a>工具。
+由于该工具最初是为内部切片设计的，可能需要进行一些小的调整。
+例如，基准测试名称可能需要调整（如"hmmer"改为"456.hmmer"）。
+即使偶尔有切片运行失败，
+这个工具仍然能够为SPEC CPU 2006提供准确的整体性能指标。</p>
+<p>To calculate SPEC CPU 2006 scores after running the checkpoints using GEM5,
+use the <a href="https://github.com/shinezyy/gem5_data_proc">gem5_data_proc</a> tool.
+Minor adjustments to the tool may be necessary as it was designed for internal checkpoints.
+For example, benchmark names may need adaptation (e.g., "hmmer" to "456.hmmer").
+Even with occasional checkpoint failures,
+this tool should provide accurate overall performance metrics for SPEC CPU 2006.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="nemu"><a class="header" href="#nemu">NEMU</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="概览overview"><a class="header" href="#概览overview">概览（Overview）</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="配置系统configuration-system"><a class="header" href="#配置系统configuration-system">配置系统（Configuration System）</a></h1>
+<p>TODO:</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="基准测试benchmarks"><a class="header" href="#基准测试benchmarks">基准测试（Benchmarks）</a></h1>
+<p>TODO:</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="openblas"><a class="header" href="#openblas">OpenBLAS</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="spec-cpu-2006"><a class="header" href="#spec-cpu-2006">SPEC CPU 2006</a></h1>
+<h2 id="preparing-spec-cpu2006-source-code"><a class="header" href="#preparing-spec-cpu2006-source-code">Preparing SPEC CPU2006 Source Code</a></h2>
+<p>Before using this project, you need to prepare the SPEC CPU2006 program source code yourself. Please follow these steps:</p>
+<ol>
+<li>Obtain the SPEC CPU2006 source code (we cannot provide the source code due to licensing restrictions).</li>
+<li>It is recommended to store the SPEC CPU2006 source code directory separately, not in the same location as this repository.</li>
+<li>Rename the obtained source code folder to "spec2006", like ~/workspace/spec2006.</li>
+<li>Please do not modify the SPEC CPU2006 source code, as this may cause the build to fail.</li>
+<li>Note that the spec2006/default.nix directory in this repository is different from the SPEC CPU2006 source code directory. The former can be considered as a Nix build script.</li>
+</ol>
+<p>Note: Generating checkpoints may take several or more than ten hours, depending on the complexity of the benchmark.</p>
+<p>Please note that the build process may take a considerable amount of time:</p>
+<ol>
+<li>
+<p>First, the script will fetch and compile the RISC-V GCC toolchain, Linux kernel, QEMU, and other necessary components. This step takes approximately 1 hour.</p>
+</li>
+<li>
+<p>Then, it will use QEMU for profiling, SimPoint sampling, and QEMU checkpoint generation. Generating spec2006 ref input checkpoint typically requires about 10 hours.</p>
+</li>
+</ol>
+<p>If you want to quickly test the system, you can start by setting the input size to "test":</p>
+<ol>
+<li>Edit the <code>conf.nix</code> file</li>
+<li>Change <code>size = xxx</code> to <code>size = "test"</code></li>
+</ol>
+<p>With the test input size, the entire process should complete in about 30 minutes.</p>
+<p>Finally, it will generate a result folder, you will get all the checkpoints in the result folder</p>
+<p>If you want to back up some checkpoints:
+run</p>
+<pre><code class="language-bash">nom-build -j 30
+python3 backup_checkpoints.py
+</code></pre>
+<p>It will copy checkpoints from nix path to local pwd path, named backup_XXX (timestamp).
+Notice: backup_XXX is about 100GB!</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="构建框架builders"><a class="header" href="#构建框架builders">构建框架（Builders）</a></h1>
+<p><img src="designs/4.builders/./images/overview_py.svg" alt="" /></p>
+<p><img src="designs/4.builders/./images/deps_py.svg" alt="" /></p>
+<p>TODO:</p>
+<p>The project uses Nix to manage dependencies and build the necessary components:</p>
+<ul>
+<li>QEMU: Modified version of QEMU with checkpoint and profiling capabilities</li>
+<li>Simpoint: Simpoint is a tool for profiling and checkpointing in XiangShan</li>
+<li>OpenSBI: RISC-V OpenSBI firmware</li>
+<li>Linux: Custom Linux kernel image</li>
+<li>Profiling tools: Scripts and plugins for analyzing checkpoint data</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="镜像构建器image-builder"><a class="header" href="#镜像构建器image-builder">镜像构建器（Image Builder）</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="切片构建器checkpoint-builder"><a class="header" href="#切片构建器checkpoint-builder">切片构建器（Checkpoint Builder）</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="可配参数configurable-arguments"><a class="header" href="#可配参数configurable-arguments">可配参数（Configurable Arguments）</a></h1>
+<style>
+arg {
+  font-family: mono;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+arg::before {
+  content: "• "
+}
+</style>
+<h2 id="共通common"><a class="header" href="#共通common">共通（Common）</a></h2>
+<p><arg>cc</arg>: Compiler Collection used for compiling RISC-V binaries.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: <code>"gcc14"</code></li>
+<li><strong>Available values</strong>: Prefix of any nixpkgs-supported <u>xxx</u>Stdenv.
+To list available <u>xxx</u>Stdenv:
+<pre><code class="language-bash">nix-instantiate --eval -E 'let pkgs=import &lt;nixpkgs&gt; {}; in builtins.filter (x: pkgs.lib.hasSuffix "Stdenv" x)(builtins.attrNames pkgs)'
+</code></pre>
+</li>
+<li><strong>TODO</strong>: Currently only supports GCC's stdenv.
+LLVM's fortran compiler (flang) is needed to support Clang's stdenv.
+Preliminary experiments with riscv64-jemalloc show that Clang provides better auto-vectorization than GCC.</li>
+</ul>
+<h2 id="构建器builders"><a class="header" href="#构建器builders">构建器（Builders）</a></h2>
+<p><arg>cores</arg>: Number of cores.</p>
+<ul>
+<li><strong>Type</strong>: number-in-string</li>
+<li><strong>Default value</strong>: <code>"1"</code></li>
+<li><strong>Available values</strong>: <code>"1"</code>, <code>"2"</code>.
+(<a href="https://github.com/OpenXiangShan/LibCheckpoint">LibCheckpoint</a> is still in development,
+its stable configuration current only supports dual core)</li>
+<li><strong>Note</strong>: <code>cpt-simulator</code>: qemu supports multiple cores, however, nemu only supports single core.</li>
+</ul>
+<p><arg>cpt-maxK</arg>: maxK value for all benchmarks in checkpoint generation.</p>
+<ul>
+<li><strong>Type</strong>: number-in-string</li>
+<li><strong>Default value</strong>: <code>"30"</code></li>
+<li><strong>Description</strong>:
+maxK is a parameter in SimPoint algorithm used during the checkpoint's clustering stage.
+<code>cpt-maxK</code> will set maxK for all benchmarks' clustering stage in checkpoints generation.
+To override the maxK for specific benchmarks, refer to the <code>cpt-maxK-bmk</code> argument.</li>
+</ul>
+<p><arg>cpt-intervals</arg>: Number of BBV interval instructions in checkpoint generation.</p>
+<ul>
+<li><strong>Type</strong>: number-in-string</li>
+<li><strong>Default value</strong>: <code>"20000000"</code></li>
+</ul>
+<p><arg>cpt-simulator</arg>: Simulator used in checkpoint generation.</p>
+<ul>
+<li>
+<p><strong>Type</strong>: string</p>
+</li>
+<li>
+<p><strong>Default value</strong>: <code>"qemu"</code></p>
+</li>
+<li>
+<p><strong>Available values</strong>: <code>"qemu"</code>, <code>"nemu"</code></p>
+</li>
+<li>
+<p><strong>Note</strong>:
+Though nemu is faster than qemu,</p>
+<ul>
+<li>nemu does not support multiple cores,</li>
+<li>the current version of nemu is not deterministic.</li>
+</ul>
+<p>Therefore, qemu is chosen as the default simulator.
+For more information, refer to <a href="https://github.com/OpenXiangShan/Deterload/issues/8">OpenXiangShan/Deterload Issue #8: nemu is not deterministic</a>.</p>
+</li>
+</ul>
+<p><arg>cpt-format</arg>: Compress format of output checkpoints.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: <code>"zstd"</code></li>
+<li><strong>Available value</strong>: <code>"zstd"</code>, <code>"gz"</code></li>
+<li><strong>Note</strong>: nemu supports both formats; however, qemu only supports zstd format.</li>
+</ul>
+<p><arg>interactive</arg>: The image is interactive.</p>
+<ul>
+<li><strong>Type</strong>: bool</li>
+<li><strong>Default value</strong>: <code>false</code></li>
+<li><strong>Note</strong>: This argument only use together with <code>-A sim</code> to debug.</li>
+</ul>
+<p><arg>enableTrap</arg>: Whether to incorporate QEMU/NEMU trap in image.</p>
+<ul>
+<li><strong>Type</strong>: bool</li>
+<li><strong>Default value</strong>: <code>true</code></li>
+</ul>
+<p><arg>linuxVersion</arg>: The linux kernel version</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: <code>"default"</code></li>
+<li><strong>Available values</strong>: Suffix of any nixpkgs-supported linuxKernel.kernels.linux_<u>xxx</u>.
+To list available linuxKernel.kernels.linux_<u>xxx</u>:
+<pre><code class="language-bash">nix-instantiate --eval -E 'let pkgs=import &lt;nixpkgs&gt; {}; in builtins.filter (x: pkgs.lib.hasPrefix "linux_" x) (builtins.attrNames pkgs.linuxKernel.kernels)'
+</code></pre>
+</li>
+</ul>
+<p><arg>linuxStructuredExtraConfig</arg>: The extra structured linux config</p>
+<ul>
+<li><strong>Type</strong>: attr (with lib.kernel; {kernelConfigEntry = kernelItem; ...})</li>
+<li><strong>Note1</strong>:
+The syntax of kernelConfigEntry is the entry available is Kconfig.
+In other words, the CONFIG_XXX with "CONFIG_" removed.
+The syntax of kernelItem is lib.kernel.xxx.</li>
+<li><strong>Note2</strong>:
+This argument will used to generate linux config file together with riscv64's defconfig
+and built-in configs in builders/imgBuilder/linux/default.nix.
+The generated config file can be accessed by <code>linux.configfile</code>.</li>
+</ul>
+<p><arg>linuxKernelPatches</arg>: The linux kernelPatches</p>
+<ul>
+<li><strong>Type</strong>: list of attrs ([{name = xxx; patch = xxx; extraConfig = xxx;} ...])</li>
+<li><strong>Default values:</strong>: ./imgBuilder/linux/patches/*.nix</li>
+<li><strong>Node</strong>:
+The <code>patch</code> is a patch file that can be applied by patch executable to linux source code.
+The optional <code>extraConfig</code> is linux configs, each line of which is in string form without the CONFIG_ prefix.</li>
+</ul>
+<h2 id="openblas-1"><a class="header" href="#openblas-1">OpenBLAS</a></h2>
+<p><arg>TARGET</arg>: CPU TARGET for OpenBLAS.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: "RISCV64_GENERIC"`</li>
+<li><strong>Available values</strong>: <code>"RISCV64_GENERIC"</code>, <code>"RISCV64_ZVL128B"</code>, <code>"RISCV64_ZVL256B"</code></li>
+</ul>
+<h2 id="spec-cpu-2006-1"><a class="header" href="#spec-cpu-2006-1">SPEC CPU 2006</a></h2>
+<p><arg>enableVector</arg>: Controls compiler's auto-vectorization during benchmark builds.</p>
+<ul>
+<li><strong>Type</strong>: bool</li>
+<li><strong>Default value</strong>: <code>false</code></li>
+</ul>
+<p><arg>src</arg>: Path to SPEC CPU 2006 source code.</p>
+<ul>
+<li><span style="background-color:yellow;"><strong>Note</strong></span>:
+As SPEC CPU 2006 is a proprietary benchmark, it cannot be incorporated in Deterload's source code.
+You need to obatin the its source code through legal means.</li>
+<li><strong>Type</strong>: path</li>
+<li><strong>Supported path types</strong>:
+<ul>
+<li>
+<p>Path to a folder:</p>
+<p>The folder must be the root directory of the SPEC CPU 2006 source code.</p>
+<p>Example:</p>
+<pre><code class="language-nix">src = /path/miao/spec2006;
+</code></pre>
+<p>Required folder structure:</p>
+<pre><code>/path/miao/spec2006
+├── benchspec/
+├── bin/
+├── tools/
+├── shrc
+...
+</code></pre>
+</li>
+<li>
+<p>Path to a tar file:</p>
+<p>The tar file must contain a folder named exactly <code>spec2006</code>,
+with the same folder structure as above.</p>
+<p>Supported tar file extensions:</p>
+<ul>
+<li>gzip (.tar.gz, .tgz or .tar.Z)</li>
+<li>bzip2 (.tar.bz2, .tbz2 or .tbz)</li>
+<li>xz (.tar.xz, .tar.lzma or .txz)</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-nix">src = /path/of/spec2006.tar.gz;
+</code></pre>
+</li>
+<li>
+<p>For more information about supported path types,
+please see <a href="https://nixos.org/manual/nixpkgs/stable/#ssec-unpack-phase">Nixpkgs Manual: The unpack phase</a>.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><arg>size</arg>: Input size for SPEC CPU 2006.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: <code>"ref"</code></li>
+<li><strong>Available values</strong>: <code>"ref"</code>, <code>"train"</code>, <code>"test"</code></li>
+</ul>
+<p><arg>optimize</arg>: Compiler optimization flags for SPEC CPU 2006.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: <code>"-O3 -flto"</code></li>
+</ul>
+<p><arg>march</arg>: Compiler's <code>-march</code> option for SPEC CPU 2006.</p>
+<ul>
+<li><strong>Type</strong>: string</li>
+<li><strong>Default value</strong>: "rv64gc${lib.optionalString enableVector "v"}"</li>
+<li><strong>Description</strong>: The default value depends on <code>enableVector</code>:
+<ul>
+<li>If <code>enableVector</code> is <code>true</code>, the default value is <code>"rv64gc"</code>,</li>
+<li>If <code>enableVector</code> is <code>false</code>, the default value is <code>"rv64gcv"</code>.</li>
+</ul>
+</li>
+</ul>
+<p><arg>testcase-filter</arg>: Function to filter SPEC CPU 2006 testcases.</p>
+<ul>
+<li><strong>Type</strong>: string -&gt; bool</li>
+<li><strong>Default value</strong>: <code>testcase: true</code></li>
+<li><strong>Description</strong>: <code>testcase-filter</code> takes a testcase name as input and returns:
+<ul>
+<li><code>true</code>: include this testcase</li>
+<li><code>false</code>: exclude this testcase</li>
+</ul>
+</li>
+<li><strong>Example 1</strong>: Include all testcases:
+<pre><code class="language-nix">testcase-filter = testcase: true;
+</code></pre>
+</li>
+<li><strong>Example 2</strong>: Only include <code>403_gcc</code>:
+<pre><code class="language-nix">testcase-filter = testcase: testcase == "403_gcc";
+</code></pre>
+</li>
+<li><strong>Example 3</strong>: Exlcude <code>464_h264ref</code> and <code>465_tonto</code>:
+<pre><code class="language-nix">testcase-filter = testcase: !(builtins.elem testcase [
+  "464_h264ref"
+  "465_tonto"
+]);
+</code></pre>
+</li>
+</ul>
+<p><arg>per-bmk-maxK</arg>: maxK values for specifed benchmarks in checkpoint generation.</p>
+<ul>
+<li><strong>Type</strong>: attr (<code>{ benchmark-name = number-in-string; ... }</code>)</li>
+<li><strong>Default value</strong>: <code>{ "483_xalancbmk" = "100"; }</code></li>
+<li><strong>Description</strong>:
+<code>per-bmk-maxK</code> sets the the maxK for specifed benchmarks.
+Unspecified benchmarks will use the value from <code>cpt-maxK</code>.
+This attribute consists of key-value pairs where:
+<ul>
+<li>Key: benchmark name.</li>
+<li>Value: number in a string (same format as <code>cpt-maxK</code>).</li>
+</ul>
+</li>
+<li><strong>FAQ</strong>: Why set maxK of 483_xalancbmk to 100?
+<ul>
+<li>Setting maxK to 30 for 483_xalancbmk resulted in unstable scores.</li>
+</ul>
+</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="基准测试围benchmarks-scope"><a class="header" href="#基准测试围benchmarks-scope">基准测试围（Benchmarks Scope）</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="构建器围builders-scope"><a class="header" href="#构建器围builders-scope">构建器围（Builders Scope）</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><p>This page will be deprecated in future, due to it requiring a serial execution of workflows.
+Otherwise, simultaneous workflows compete to git merge the <code>data</code> branch.</p>
+<h1 id="构建状态build-status"><a class="header" href="#构建状态build-status">构建状态（Build Status）</a></h1>
+<p>下面的表格展示构建出工作负载的状态，具体说明如下：</p>
+<ul>
+<li><code>Date</code>行表示构建开始的时间，格式为年月日时分秒(yymmddhhmmss)。
+各列按照<code>Date</code>降序排列（最新排最前面）。</li>
+<li><code>Commit</code>行显示每次构建对应的Git commit的哈希值。</li>
+<li><code>Note</code>行包含简单的说明（主要是说明为什么哈希值发生变化）。</li>
+<li><code>result/</code>行及其下方的行表示构建结果的Nix store哈希值。
+每个单元格都用颜色标记，不同的颜色表示不同的哈希值。
+通过这种颜色标记，可以轻松看出多次构建之间是否保持了<strong>确定性</strong>。</li>
+</ul>
+<p>The tables below demonstrate the status of built workloads, with the following details:</p>
+<ul>
+<li>The <code>Date</code> row indicates the build start time in yymmddhhmmss format.
+Columns are sorted by <code>Date</code> in descending order (most recent first).</li>
+<li>The <code>Commit</code> row displays the Git commit hash associated with each build.</li>
+<li>The <code>Note</code> row shows a simple explanation (mainly explains why hash changed).</li>
+<li>The <code>result/</code> row and the subsequent rows indicates the Nix store hashes of build results.
+Each cell is color-coded, with different colors indicating distinct hash values.
+This color coding makes it straightforward to verify <strong>deterministic</strong> build across multiple builds.</li>
+</ul>
+<h2 id="spec2006"><a class="header" href="#spec2006">SPEC2006</a></h2>
+<div style="width: var(--content-max-width); overflow: auto;">
+<div id="spec2006Table"></div>
+</div>
+<h2 id="openblas-2"><a class="header" href="#openblas-2">OpenBLAS</a></h2>
+<div style="width: var(--content-max-width); overflow: auto;">
+<div id="openblasTable"></div>
+</div>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="./gen_table.js"></script>
+<script>
+gen_table("spec2006Table", "https://raw.githubusercontent.com/OpenXiangShan/Deterload/refs/heads/data/spec2006.txt")
+gen_table("openblasTable", "https://raw.githubusercontent.com/OpenXiangShan/Deterload/refs/heads/data/openblas.txt")
+</script>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>
