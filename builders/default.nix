@@ -76,6 +76,25 @@ cores ? "1"
 , enableTrap ? true
 
 /**
+<arg>enableV</arg>: Whether to enable the RISC-V V vector extension in the
+machine description and QEMU CPU configuration.
+* **Type**: bool
+* **Default value**: `true`
+* **Note**: This controls the simulated machine. It is independent from
+  `examples/spec2006`'s `enableVector`, which controls compiler code
+  generation.
+*/
+, enableV ? true
+
+/**
+<arg>enableH</arg>: Whether to enable the RISC-V H hypervisor extension in the
+machine description and QEMU CPU configuration.
+* **Type**: bool
+* **Default value**: `false`
+*/
+, enableH ? false
+
+/**
 <arg>linuxVersion</arg>: The linux kernel version
 * **Type**: string
 * **Default value**: `"default"`
@@ -135,7 +154,24 @@ assert lib.assertMsg (cpt-simulator=="nemu" -> cores=="1") "nemu only supports s
 assert lib.assertOneOf "cpt-simulator" cpt-simulator ["qemu" "nemu"];
 assert lib.assertOneOf "cpt-format" cpt-format ["gz" "zstd"];
 assert lib.assertMsg (cpt-simulator=="qemu" -> cpt-format=="zstd") "qemu only supports cpt-format: zstd";
-benchmark: lib.makeScope lib.callPackageWith (self: {
+assert lib.assertMsg (builtins.isBool enableV) "enableV must be a boolean";
+assert lib.assertMsg (builtins.isBool enableH) "enableH must be a boolean";
+let
+  qemu_cpu = builtins.concatStringsSep "," (
+    [
+      "rv64"
+      "v=${lib.boolToString enableV}"
+    ]
+    ++ lib.optional enableV "vlen=128"
+    ++ [
+      "h=${lib.boolToString enableH}"
+      "sv39=true"
+      "sv48=true"
+      "sv57=false"
+      "sv64=false"
+    ]
+  );
+in benchmark: lib.makeScope lib.callPackageWith (self: {
   inherit benchmark;
   gen_init_cpio = callPackage ./imgBuilder/linux/initramfs/base/gen_init_cpio {};
   initramfs_base = callPackage ./imgBuilder/linux/initramfs/base {
@@ -174,7 +210,9 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
     inherit linuxStructuredExtraConfig linuxKernelPatches;
   };
 
-  dts = callPackage ./imgBuilder/opensbi/dts { inherit cores; };
+  dts = callPackage ./imgBuilder/opensbi/dts {
+    inherit cores enableV enableH;
+  };
   opensbi = callPackage ./imgBuilder/opensbi { inherit (self) dts linux; };
   gcpt_single_core = callPackage ./imgBuilder/gcpt/single_core.nix {
     inherit (self) opensbi;
@@ -194,6 +232,7 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
   simpoint = callPackage ./cptBuilder/simpoint {};
   stage1-profiling = callPackage ./cptBuilder/1.profiling.nix {
     inherit (self) qemu nemu img;
+    inherit qemu_cpu;
     workload_name = "miao";
     intervals = cpt-intervals;
     simulator = cpt-simulator;
@@ -206,6 +245,7 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
   };
   stage3-checkpoint = callPackage ./cptBuilder/3.checkpoint.nix {
     inherit (self) qemu nemu img stage2-cluster;
+    inherit qemu_cpu;
     workload_name = "miao";
     intervals = cpt-intervals;
     simulator = cpt-simulator;
@@ -237,6 +277,7 @@ benchmark: lib.makeScope lib.callPackageWith (self: {
 
   sim = callPackage ./sim.nix {
     inherit (self) qemu img;
+    inherit qemu_cpu;
     smp = cores;
   };
 })

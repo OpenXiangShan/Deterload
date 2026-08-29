@@ -3,9 +3,14 @@
 , dtc
 
 , cores
+, enableV
+, enableH
 }:
 let
   name = "xiangshan.dtb";
+  isa = "rv64imafdc"
+    + (if enableV then "v" else "")
+    + (if enableH then "h" else "");
 in stdenv.mkDerivation {
   inherit name;
   src = fetchFromGitHub {
@@ -18,6 +23,7 @@ in stdenv.mkDerivation {
   buildInputs = [
     dtc
   ];
+
   buildPhase = let
     dtsFile = if cores=="1" then "system.dts"
          else if cores=="2" then "fpga-dualcore-system.dts"
@@ -25,6 +31,7 @@ in stdenv.mkDerivation {
          else throw "dts only supports 1/2/4 cores";
   in ''
     cd dts
+    sed -E -i 's/rv64imafdc(hv|vh|h|v)?/${isa}/g' ${dtsFile}
     dtc -O dtb -o ${name} ${dtsFile}
   '';
   installPhase = ''
