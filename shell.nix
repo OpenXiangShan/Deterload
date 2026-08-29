@@ -17,6 +17,8 @@ let
       * `nom-build ... --argstr <key> <strvalue> ...`
       * E.g: Generate spec2006 simpoint-guided checkpoints using given source code:
         * `nom-build examples/spec2006/ --arg src <PATH_TO_SPEC2006> -A cpts-simpoint`
+      * E.g: Generate hello demo single full checkpoint with H/V extention enable:
+        * `nom-build examples/hello-nolibc --arg enableV true --arg enableH true -A cpt-0th`
     * Configure by a file: see `examples/*/config.nix`
 
     ## Generation
