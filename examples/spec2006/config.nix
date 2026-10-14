@@ -2,6 +2,9 @@
   cc = "gcc13";
   cores = "2";
 
+  # Simulated CPU extensions. These must match the ISA used by the workload.
+  enableV = true;
+  enableH = false;
   enableVector = true;
 
   size = "test";

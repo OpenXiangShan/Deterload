@@ -1,8 +1,11 @@
 { lib ? import <nixpkgs/lib>
 /**
-<arg>enableVector</arg>: Controls compiler's auto-vectorization during benchmark builds.
+<arg>enableVector</arg>: Controls whether SPEC benchmarks are compiled with
+RISC-V V extension instructions.
 * **Type**: bool
 * **Default value**: `false`
+* **Note**: This controls compiler code generation only. Use the common
+  `enableV` argument to configure the simulated CPU.
 */
 , enableVector ? false
 
@@ -72,8 +75,8 @@
 * **Type**: string
 * **Default value**: "rv64gc${lib.optionalString enableVector "v"}"
 * **Description**: The default value depends on `enableVector`:
-  * If `enableVector` is `true`, the default value is `"rv64gc"`,
-  * If `enableVector` is `false`, the default value is `"rv64gcv"`.
+  * If `enableVector` is `true`, the default value is `"rv64gcv"`,
+  * If `enableVector` is `false`, the default value is `"rv64gc"`.
 */
 , march ? "rv64gc${lib.optionalString enableVector "v"}"
 
