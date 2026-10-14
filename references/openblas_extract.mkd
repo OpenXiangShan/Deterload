@@ -1,0 +1,4 @@
+<arg>TARGET</arg>: CPU TARGET for OpenBLAS.
+* **Type**: string
+* **Default value**: "RISCV64_GENERIC"`
+* **Available values**: `"RISCV64_GENERIC"`, `"RISCV64_ZVL128B"`, `"RISCV64_ZVL256B"`

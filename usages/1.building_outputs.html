@@ -1,0 +1,423 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>构建工作负载（Building Workloads） - ❄ 确定性负载（Deterload）❄</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><li class="part-title">🏠入门（Get Started）</li><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> README.md</a></li><li class="chapter-item expanded affix "><li class="part-title">📝使用（Usages）</li><li class="chapter-item expanded "><a href="../usages/1.building_outputs.html" class="active"><strong aria-hidden="true">2.</strong> 构建工作负载（Building Workloads）</a></li><li class="chapter-item expanded "><a href="../usages/4.running/index.html"><strong aria-hidden="true">3.</strong> 运行工作负载（Running Workloads）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../usages/4.running/emulators.html"><strong aria-hidden="true">3.1.</strong> 仿真器（Emulators）</a></li><li class="chapter-item expanded "><a href="../usages/4.running/gem5.html"><strong aria-hidden="true">3.2.</strong> GEM5</a></li><li class="chapter-item expanded "><a href="../usages/4.running/nemu.html"><strong aria-hidden="true">3.3.</strong> NEMU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">🖊️设计（Designs）</li><li class="chapter-item expanded "><a href="../designs/1.overview.html"><strong aria-hidden="true">4.</strong> 概览（Overview）</a></li><li class="chapter-item expanded "><a href="../designs/2.configuration_system.html"><strong aria-hidden="true">5.</strong> 配置系统（Configuration System）</a></li><li class="chapter-item expanded "><a href="../designs/3.benchmarks/index.html"><strong aria-hidden="true">6.</strong> 基准测试（Benchmarks）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../designs/3.benchmarks/openblas.html"><strong aria-hidden="true">6.1.</strong> OpenBLAS</a></li><li class="chapter-item expanded "><a href="../designs/3.benchmarks/spec2006.html"><strong aria-hidden="true">6.2.</strong> SPEC CPU 2006</a></li></ol></li><li class="chapter-item expanded "><a href="../designs/4.builders/index.html"><strong aria-hidden="true">7.</strong> 构建框架（Builders）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../designs/4.builders/1.imgBuilder.html"><strong aria-hidden="true">7.1.</strong> 镜像构建器（Image Builder）</a></li><li class="chapter-item expanded "><a href="../designs/4.builders/2.cptBuilder.html"><strong aria-hidden="true">7.2.</strong> 切片构建器（Checkpoint Builder）</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">🗂️参考（References）</li><li class="chapter-item expanded "><a href="../references/1.configurable.html"><strong aria-hidden="true">8.</strong> 可配参数（Configurable Arguments）</a></li><li class="chapter-item expanded "><a href="../references/2.benchmarks_scope.html"><strong aria-hidden="true">9.</strong> 基准测试围（Benchmarks Scope）</a></li><li class="chapter-item expanded "><a href="../references/3.builders_scope.html"><strong aria-hidden="true">10.</strong> 构建器围（Builders Scope）</a></li><li class="chapter-item expanded "><a href="../references/4.status/index.html"><strong aria-hidden="true">11.</strong> </a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">❄ 确定性负载（Deterload）❄</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/OpenXiangShan/Deterload" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="构建工作负载building-workloads"><a class="header" href="#构建工作负载building-workloads">构建工作负载（Building Workloads）</a></h1>
+<p>Deterload是一套基于nix开发的工作负载构建系统。
+构建工作负载主要是使用nix，
+你可能会心头一紧，🙀“我就是想构建一些工作负载，还要需要一套新的编程语言/一个包管理器？”。
+😺放轻松！不用担心！
+尽管nix的完整学习曲线较陡峭，
+但在本项目中，你只需要掌握少量直观的nix命令和语法即可。</p>
+<p>Deterload is a workload building system developed based on nix.
+Building workloads mainly involves using nix.
+You might tense up, 🙀 "I just want to build some workloads, why do I need a new programming language/package manager?"
+😺 Relax! Don't worry!
+Although nix has a steep learning curve overall,
+in this project, you only need to master a few intuitive nix commands and syntax.</p>
+<h2 id="基础构建basic-building"><a class="header" href="#基础构建basic-building">基础构建（Basic Building）</a></h2>
+<p>让我们从最简单的例子开始——构建一套OpenBLAS切片。
+只需一行命令：</p>
+<p>Let's start with the simplest example — building an OpenBLAS checkpoint.
+It only takes one command:</p>
+<pre><code class="language-bash">nix-build examples/openblas -A cpts-simpoint
+</code></pre>
+<p>这行命令的组成：</p>
+<ul>
+<li><code>nix-build</code>是nix用于构建包的基础命令</li>
+<li><code>examples/openblas</code>指定了openblas</li>
+<li><code>-A cpts-simpoint</code>指定了构建目标基于simpoint的切片</li>
+<li>提示1：如果你想看详细的构建信息（很酷炫的树形依赖图、任务数统计、时间统计等等），
+你可以将<code>nix-build</code>替换为<code>nom-build</code>（一个<code>nix-build</code>的第三方包装命令`）。</li>
+<li>提示2：其中<code>examples/openblas</code>是一个结构体（nix里被成为attribute set，类似python字典），
+包含了多个OpenBLAS工作负载相关的包，比如<code>-A benchmark</code>、<code>-A linux</code>、<code>-A qemu</code>和<code>-A cpts-simpoint</code>等等。</li>
+<li>提示3：如果你的shell有命令补全功能，<code>nix-build -A</code>敲<kbd>tab</kbd>键能给你补全出openblas里所有的包。
+其中<code>-A cpts-simpoint</code>是我们需要的切片。</li>
+</ul>
+<p>This command consists of:</p>
+<ul>
+<li><code>nix-build</code> is nix's basic command for building packages</li>
+<li><code>examples/openblas</code> specifies openblas</li>
+<li><code>-A cpts-simpoint</code> specifies the build target is checkpoints based on simpoint</li>
+<li>Tip 1: If you want to see detailed build information (cool dependency trees, task statistics, time statistics, etc.),
+you can replace <code>nix-build</code> with <code>nom-build</code> (a third-party wrapper for <code>nix-build</code>).</li>
+<li>Tip 2: Here <code>examples/openblas</code> is a structure (called attribute set in nix, similar to Python dictionary),
+containing multiple OpenBLAS workload-related packages, such as <code>-A benchmark</code>, <code>-A linux</code>, <code>-A qemu</code>, and <code>-A cpts-simpoint</code>, etc.</li>
+<li>Tip 3: If your shell has command completion, pressing <kbd>tab</kbd> after <code>nix-build -A</code> will show all packages in openblas.
+Among these, <code>-A cpts-simpoint</code> is the checkpoint we need.</li>
+</ul>
+<p>构建OpenBLAS的切片需要几个小时。
+构建完成后会输出类似这样的路径：</p>
+<p>Building an OpenBLAS checkpoin takes several hours.
+After completion, it outputs a path like this:</p>
+<pre><code>/nix/store/6rbfs8nx9xiv1s7z5xbi7m6djbkn9sgh-openblas_gcc_1410_RISCV64_GENERIC_glibc_qemu_20M_maxK30_1core_cpt
+</code></pre>
+<p>nix会自动将该路径符号链接到<code>./result</code>。
+你可以通过<code>-o</code>选项来改变默认符号链接的目标地址：</p>
+<p>nix will automatically create a symbolic link to this path at <code>./result</code>.
+You can change the default symbolic link target using the <code>-o</code> option:</p>
+<pre><code class="language-bash">nix-build examples/openblas -A cpts-simpoint -o result-openblas.cpts-simpoint
+</code></pre>
+<p>值得注意的是，这一次构建<code>cpts-simpoint</code>会非常快速。
+这是因为nix采用的确定性构建的机制。
+这一次构建和上一次构建除了名字以外没啥不同，所以nix直接复用之前的构建结果。</p>
+<p>Notably, this second build of <code>cpts-simpoint</code> will be very quick.
+This is due to nix's deterministic build mechanism.
+Since this build is identical to the previous one except for the name, nix directly reuses the previous build result.</p>
+<h2 id="配参数configuring-arguments"><a class="header" href="#配参数configuring-arguments">配参数（Configuring Arguments）</a></h2>
+<p>构建产物的路径名（如上面的例子）包含了多个标签，例如：</p>
+<ul>
+<li>编译器版本（gcc 14.1.0）</li>
+<li>OpenBLAS的目标架构（RISCV64_GENERIC）</li>
+<li>...</li>
+</ul>
+<p>The build output path (as in the example above) contains multiple tags, such as:</p>
+<ul>
+<li>Compiler version (gcc 14.1.0)</li>
+<li>OpenBLAS target architecture (RISCV64_GENERIC)</li>
+<li>...</li>
+</ul>
+<p>这些标签都是默认配置中预设好的参数。
+我们可以根据自己的需求配置参数。
+Deterload支持三种配置方式：</p>
+<ul>
+<li>命令行</li>
+<li>配置文件</li>
+<li>命令行+配置文件</li>
+</ul>
+<p>These tags represent parameters set in the default configuration.
+We can configure these parameters according to our needs.
+Deterload supports three configuration methods:</p>
+<ul>
+<li>Command line</li>
+<li>Configuration file</li>
+<li>Command line + Configuration file</li>
+</ul>
+<h3 id="命令行command-line"><a class="header" href="#命令行command-line">命令行（Command Line）</a></h3>
+<p>使用<code>--arg key value</code>的方式配置参数，例如：</p>
+<p>Configure parameters using <code>--arg key value</code>, for example:</p>
+<pre><code class="language-bash">nix-build examples/openblas --arg cpt-maxK '"10"' -A cpts-simpoint
+</code></pre>
+<ul>
+<li>`--arg cpt-maxK '"10"'：设置simpoint的maxK设为10</li>
+</ul>
+<p>注意：nix对参数类型有严格要求。
+比如<code>cpt-maxK</code>是一个字符串类型的参数，因此接收的参数需要加双引号（额外加单引号是为了shell不要吞掉双引号）。</p>
+<ul>
+<li><code>--arg cpt-maxK '"10"'</code>: Set simpoint's maxK to 10</li>
+</ul>
+<p>Note: nix has strict type requirements for parameters.
+For instance, <code>cpt-maxK</code> is a string parameter, so it needs double quotes (with extra single quotes to prevent shell from stripping the double quotes).</p>
+<p>对于字符串类型的参数，双引号单引号过于麻烦，可以用<code>--argstr key value</code>来简化<code>--arg key '"value"'</code>：</p>
+<p>For string parameters, dealing with double and single quotes is cumbersome, so you can use <code>--argstr key value</code> to simplify <code>--arg key '"value"'</code>:</p>
+<pre><code class="language-bash">nix-build examples/openblas --argstr cpt-maxK 10 -A cpts-simpoint
+</code></pre>
+<h3 id="配置文件configuration-file"><a class="header" href="#配置文件configuration-file">配置文件（Configuration File）</a></h3>
+<p>你可能会想：“我可以把命令行写入写一个shell脚本，岂不是就有了‘配置文件’了嘛”。像这样：</p>
+<p>You might think: "I could write these command lines into a shell script, and that would be a 'configuration file', right?" Like this:</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+# 这是一个难以保证确定性构建的“配置文件”
+# This is a "configuration file" that can't guarantee deterministic builds
+nix-build examples/openblas --argstr cpt-maxK 10 -A cpts-simpoint
+</code></pre>
+<p>这样的“配置文件”并不适合协同开发，因为：</p>
+<ul>
+<li>不同开发者用的Deterload版本可能不同，构建结果难以一致。</li>
+<li>参数名称和含义可能会因版本变化而有所不同。</li>
+</ul>
+<p>This type of "configuration file" isn't suitable for collaborative development because:</p>
+<ul>
+<li>Different developers might use different Deterload versions, making build results inconsistent.</li>
+<li>Parameter names and meanings might change between versions.</li>
+</ul>
+<p>为了解决这些问题，我们可以使用nix来编写配置文件。
+例如，以下是一个与上述命令行等价的配置文件：</p>
+<p>To solve these issues, we can use nix to write configuration files.
+Here's a configuration file equivalent to the above command line:</p>
+<pre><code class="language-nix"># vec_maxK10.nix
+{...}@args: import (builtins.fetchTarball {
+  url = "https://github.com/OpenXiangShan/Deterload/archive/v0.1.4.tar.gz";
+  # nix-prefetch-url --unpack https://github.com/OpenXiangShan/Deterload/archive/v0.1.4.tar.gz
+  sha256 = "0l7bfjqjjlxkg8addgm6gkjv7p1psisv1wy648xwa8nw3nmgaw5d";
+}) ({
+  cpt-maxK = "10";
+} // args)
+</code></pre>
+<p>这段代码主要分成两个部分：</p>
+<ul>
+<li>固定版本的部分：
+<ul>
+<li><code>url</code>设定了Deterload的源码来自GitHub，版本为v0.1.4。</li>
+<li><code>sha256</code>是Deterload v0.1.4源码的sha256值，这个nix确定性构建的关键部分。
+你可以用<code>nix-prefetch-url</code>获取此值（见代码注释）。</li>
+</ul>
+</li>
+<li>配置参数的部分：
+<ul>
+<li>配置了<code>cpt-maxK</code>，具体含义与前文一致。</li>
+</ul>
+</li>
+</ul>
+<p>This code consists of two main parts:</p>
+<ul>
+<li>Version fixing part:
+<ul>
+<li><code>url</code> specifies that Deterload's source code comes from GitHub, version v0.1.4.</li>
+<li><code>sha256</code> is the sha256 value of Deterload v0.1.4 source code, crucial for nix's deterministic building.
+You can get this value using <code>nix-prefetch-url</code> (see code comment).</li>
+</ul>
+</li>
+<li>Parameter configuration part:
+<ul>
+<li>Configures <code>cpt-maxK</code>, with meanings as explained earlier.</li>
+</ul>
+</li>
+</ul>
+<p>将上述代码保存为文件（例如<code>vec_maxK10.nix</code>）。
+每个开发者只需运行以下命令，就能生成二进制级别一致的<code>cpts-simpoint</code>切片：</p>
+<p>Save this code as a file (e.g., <code>vec_maxK10.nix</code>).
+Any developer can run the following command to generate a binary-identical <code>cpts-simpoint</code> checkpoint:</p>
+<pre><code class="language-bash">nix-build vec_maxK10.nix -A cpts-simpoint
+</code></pre>
+<p>比如在我的电脑上获得的结果路径，以及第一个切片的md5sum应该和你得到一样：</p>
+<p>For example, the checkpoint path of the result, and the md5sum of the first checkpoint on my computer should match yours:</p>
+<pre><code class="language-bash"># cd /nix/store/s3wxbj9rcxksn22v9ghlhikf1rvi4ybf-openblas_gcc_1410_RISCV64_ZVL128B_glibc_qemu_20M_maxK10_1core_cpt/miao &amp;&amp; ls
+2  186  2343  3274  4093  4668  5991  6285  6357
+# md5sum 2/_2_0.168009.gz
+43305c3b69822ea9fd34b5e08078ad68  result/miao/2/_2_0.168009.gz
+</code></pre>
+<h3 id="命令行配置文件command-line--configuration-file"><a class="header" href="#命令行配置文件command-line--configuration-file">命令行+配置文件（Command Line + Configuration File）</a></h3>
+<p>Deterload支持命令行+配置文件混合的配置方式。
+以上述<code>vec_maxK10.nix</code>为例，命令行参数的优先级高于配置文件参数：</p>
+<p>Deterload supports mixed configuration using command line and configuration files.
+Using the above <code>vec_maxK10.nix</code> as an example, command line parameters take precedence over configuration file parameters:</p>
+<pre><code>nix-build vec_maxK10.nix --argstr cpt-maxK 20 --argstr cpt-intervals 1000000 -A openblas.cpt
+</code></pre>
+<p>上述命令覆盖了原本配置文件的<code>cpt-maxK</code>改为了<code>"20"</code>，并将<code>cpt-intervals</code>设置为了<code>"1000000"</code>。</p>
+<p>This command overrides the original <code>cpt-maxK</code> in the configuration file to <code>"20"</code> and sets <code>cpt-intervals</code> to <code>"1000000"</code>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../usages/4.running/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../usages/4.running/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

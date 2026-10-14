@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>GEM5 - ❄ 确定性负载（Deterload）❄</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><li class="part-title">🏠入门（Get Started）</li><li class="chapter-item expanded "><a href="../../index.html"><strong aria-hidden="true">1.</strong> README.md</a></li><li class="chapter-item expanded affix "><li class="part-title">📝使用（Usages）</li><li class="chapter-item expanded "><a href="../../usages/1.building_outputs.html"><strong aria-hidden="true">2.</strong> 构建工作负载（Building Workloads）</a></li><li class="chapter-item expanded "><a href="../../usages/4.running/index.html"><strong aria-hidden="true">3.</strong> 运行工作负载（Running Workloads）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../usages/4.running/emulators.html"><strong aria-hidden="true">3.1.</strong> 仿真器（Emulators）</a></li><li class="chapter-item expanded "><a href="../../usages/4.running/gem5.html" class="active"><strong aria-hidden="true">3.2.</strong> GEM5</a></li><li class="chapter-item expanded "><a href="../../usages/4.running/nemu.html"><strong aria-hidden="true">3.3.</strong> NEMU</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">🖊️设计（Designs）</li><li class="chapter-item expanded "><a href="../../designs/1.overview.html"><strong aria-hidden="true">4.</strong> 概览（Overview）</a></li><li class="chapter-item expanded "><a href="../../designs/2.configuration_system.html"><strong aria-hidden="true">5.</strong> 配置系统（Configuration System）</a></li><li class="chapter-item expanded "><a href="../../designs/3.benchmarks/index.html"><strong aria-hidden="true">6.</strong> 基准测试（Benchmarks）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../designs/3.benchmarks/openblas.html"><strong aria-hidden="true">6.1.</strong> OpenBLAS</a></li><li class="chapter-item expanded "><a href="../../designs/3.benchmarks/spec2006.html"><strong aria-hidden="true">6.2.</strong> SPEC CPU 2006</a></li></ol></li><li class="chapter-item expanded "><a href="../../designs/4.builders/index.html"><strong aria-hidden="true">7.</strong> 构建框架（Builders）</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../designs/4.builders/1.imgBuilder.html"><strong aria-hidden="true">7.1.</strong> 镜像构建器（Image Builder）</a></li><li class="chapter-item expanded "><a href="../../designs/4.builders/2.cptBuilder.html"><strong aria-hidden="true">7.2.</strong> 切片构建器（Checkpoint Builder）</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">🗂️参考（References）</li><li class="chapter-item expanded "><a href="../../references/1.configurable.html"><strong aria-hidden="true">8.</strong> 可配参数（Configurable Arguments）</a></li><li class="chapter-item expanded "><a href="../../references/2.benchmarks_scope.html"><strong aria-hidden="true">9.</strong> 基准测试围（Benchmarks Scope）</a></li><li class="chapter-item expanded "><a href="../../references/3.builders_scope.html"><strong aria-hidden="true">10.</strong> 构建器围（Builders Scope）</a></li><li class="chapter-item expanded "><a href="../../references/4.status/index.html"><strong aria-hidden="true">11.</strong> </a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">❄ 确定性负载（Deterload）❄</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/OpenXiangShan/Deterload" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="gem5"><a class="header" href="#gem5">GEM5</a></h1>
+<p>生成的工作负载（例如切片）可以在多个香山平台上运行，包括GEM5、Nemu和香山RTL。</p>
+<p>The generated workloads (e.g. checkpoints) are compatible with multiple XiangShan platforms including GEM5, Nemu, and XiangShan RTL.</p>
+<h2 id="用法usage"><a class="header" href="#用法usage">用法（Usage）</a></h2>
+<p>请按照<a href="https://github.com/OpenXiangShan/GEM5">OpenXiangShan/GEM5</a>仓库中的配置指南进行设置。</p>
+<p>Please follow the configuration guidelines in the <a href="https://github.com/OpenXiangShan/GEM5">OpenXiangShan/GEM5</a> repository.</p>
+<p>注意：生成的切片中已包含恢复代码（见<code>opensbi/default.nix</code>），
+因此不用设置$GCB_RESTORER环境变量。</p>
+<p>Note: The generated checkpoints has included the restorer code (see <code>opensbi/default.nix</code>),
+eliminating the need to set the $GCB_RESTORER environment variable.</p>
+<h2 id="故障排除troubleshooting"><a class="header" href="#故障排除troubleshooting">故障排除（Troubleshooting）</a></h2>
+<p>请考虑在<a href="https://github.com/OpenXiangShan/Deterload/issues">Deterload issues</a>中报告你遇到的问题。</p>
+<p>Please consider reporting your issues in <a href="https://github.com/OpenXiangShan/Deterload/issues">Deterload issues</a>.</p>
+<h3 id="difftest错误difftest-errors"><a class="header" href="#difftest错误difftest-errors">Difftest错误（Difftest Errors）</a></h3>
+<ul>
+<li>
+<p>访问香山GEM5的release页面</p>
+</li>
+<li>
+<p>下载稳定版本的NEMU</p>
+</li>
+<li>
+<p>设置相应的$GCBV_REF_SO环境变量</p>
+</li>
+<li>
+<p>Visit the XiangShan GEM5 releases page</p>
+</li>
+<li>
+<p>Download a stable version of NEMU</p>
+</li>
+<li>
+<p>Set the corresponding <code>$GCBV_REF_SO</code> environment variable</p>
+</li>
+</ul>
+<h3 id="常见运行时问题general-runtime-issues"><a class="header" href="#常见运行时问题general-runtime-issues">常见运行时问题（General Runtime Issues）</a></h3>
+<ul>
+<li>
+<p>在gem5命令前添加<code>gdb --args</code>进行调试</p>
+</li>
+<li>
+<p>在本仓库或香山GEM5仓库中报告问题</p>
+</li>
+<li>
+<p>Debug by prefixing your gem5 command with <code>gdb --args</code></p>
+</li>
+<li>
+<p>Report issues in either this repository or the XiangShan GEM5 repository</p>
+</li>
+</ul>
+<h3 id="部分切片运行失败failures-in-some-checkpoints"><a class="header" href="#部分切片运行失败failures-in-some-checkpoints">部分切片运行失败（Failures in Some Checkpoints）</a></h3>
+<p>虽然目前部分切片可能在GEM5中运行失败（这个问题正在解决中），
+但约90%的切片应该能够正确执行，提供可靠的性能指标。</p>
+<p>While some checkpoints may currently fail in GEM5 (this is being addressed),
+approximately 90% should execute correctly, providing reliable performance metrics.</p>
+<h2 id="分数计算score-calculation"><a class="header" href="#分数计算score-calculation">分数计算（Score Calculation）</a></h2>
+<p>要在使用GEM5运行切片后计算SPEC CPU 2006分数，
+请使用<a href="https://github.com/shinezyy/gem5_data_proc">gem5_data_proc</a>工具。
+由于该工具最初是为内部切片设计的，可能需要进行一些小的调整。
+例如，基准测试名称可能需要调整（如"hmmer"改为"456.hmmer"）。
+即使偶尔有切片运行失败，
+这个工具仍然能够为SPEC CPU 2006提供准确的整体性能指标。</p>
+<p>To calculate SPEC CPU 2006 scores after running the checkpoints using GEM5,
+use the <a href="https://github.com/shinezyy/gem5_data_proc">gem5_data_proc</a> tool.
+Minor adjustments to the tool may be necessary as it was designed for internal checkpoints.
+For example, benchmark names may need adaptation (e.g., "hmmer" to "456.hmmer").
+Even with occasional checkpoint failures,
+this tool should provide accurate overall performance metrics for SPEC CPU 2006.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../usages/4.running/emulators.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../usages/4.running/nemu.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../usages/4.running/emulators.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../usages/4.running/nemu.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

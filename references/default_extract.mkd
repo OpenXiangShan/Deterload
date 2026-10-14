@@ -1,0 +1,11 @@
+<arg>cc</arg>: Compiler Collection used for compiling RISC-V binaries.
+* **Type**: string
+* **Default value**: `"gcc14"`
+* **Available values**: Prefix of any nixpkgs-supported <u>xxx</u>Stdenv.
+  To list available <u>xxx</u>Stdenv:
+  ```bash
+  nix-instantiate --eval -E 'let pkgs=import <nixpkgs> {}; in builtins.filter (x: pkgs.lib.hasSuffix "Stdenv" x)(builtins.attrNames pkgs)'
+  ```
+* **TODO**: Currently only supports GCC's stdenv.
+  LLVM's fortran compiler (flang) is needed to support Clang's stdenv.
+  Preliminary experiments with riscv64-jemalloc show that Clang provides better auto-vectorization than GCC.

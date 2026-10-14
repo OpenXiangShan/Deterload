@@ -1,0 +1,230 @@
+digraph G {
+bgcolor=transparent;
+compound=True;
+label="Deterload Dependency Graph";
+splines=line;
+node [shape=box];
+edge [color="#00000044"];
+node [margin=0];
+subgraph cluster_builder {
+bgcolor="#F5F5F5";
+label=builder;
+pencolor="#666666";
+penwidth=2;
+cluster_builder_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_imgBuilder {
+bgcolor="#CCE5FF";
+label=imgBuilder;
+pencolor="#666666";
+penwidth=2;
+cluster_imgBuilder_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_gcpt {
+bgcolor="#DAE8FC";
+label=gcpt;
+pencolor="#6C8EBF";
+penwidth=3;
+cluster_gcpt_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_opensbi {
+label=opensbi;
+penwidth=2;
+cluster_opensbi_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_opensbidts [label=dts];
+subgraph cluster_linux {
+label=linux;
+penwidth=2;
+cluster_linux_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_initramfs {
+label=initramfs;
+penwidth=2;
+cluster_initramfs_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_base {
+label=base;
+penwidth=2;
+cluster_base_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_basegen_init_cpio [label=gen_init_cpio];
+cluster_basecpio_list [label=cpio_list];
+}
+
+subgraph cluster_overlays {
+label=overlays;
+penwidth=2;
+cluster_overlays_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_overlaysbusybox [label=busybox];
+cluster_overlaysbefore_workload [label=before_workload];
+cluster_overlaysqemu_trap [label=qemu_trap];
+cluster_overlaysnemu_trap [label=nemu_trap];
+cluster_overlaysinittab [label=inittab];
+cluster_overlaysrun_sh [label="run.sh"];
+}
+
+}
+
+}
+
+}
+
+}
+
+}
+
+subgraph cluster_cptBuilder {
+bgcolor="#F8CECC";
+label=cptBuilder;
+pencolor="#B85450";
+penwidth=2;
+cluster_cptBuilder_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_cptBuilderqemu [label=qemu];
+cluster_cptBuildernemu [label=nemu];
+"cluster_cptBuilderstage1-profiling" [label="stage1-profiling"];
+cluster_cptBuildersimpoint [label=simpoint];
+"cluster_cptBuilderstage2-cluster" [label="stage2-cluster"];
+"cluster_cptBuilderstage3-checkpoint" [label="stage3-checkpoint"];
+cluster_cptBuilderqemu -> "cluster_cptBuilderstage1-profiling";
+cluster_cptBuildernemu -> "cluster_cptBuilderstage1-profiling";
+cluster_cptBuildersimpoint -> "cluster_cptBuilderstage2-cluster";
+"cluster_cptBuilderstage1-profiling" -> "cluster_cptBuilderstage2-cluster";
+cluster_cptBuilderqemu -> "cluster_cptBuilderstage3-checkpoint";
+cluster_cptBuildernemu -> "cluster_cptBuilderstage3-checkpoint";
+"cluster_cptBuilderstage2-cluster" -> "cluster_cptBuilderstage3-checkpoint";
+}
+
+cluster_gcpt_connect_node_ -> "cluster_cptBuilderstage1-profiling"  [color="#6C8EBF", ltail=cluster_gcpt, penwidth=3];
+cluster_gcpt_connect_node_ -> "cluster_cptBuilderstage3-checkpoint"  [color="#6C8EBF", ltail=cluster_gcpt, penwidth=3];
+}
+
+subgraph cluster_inputs {
+label="";
+pencolor=transparent;
+penwidth=2;
+cluster_inputs_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster_inputsbenchmark [color="#82B366", fillcolor="#D5E8D4", label=benchmark, style=filled];
+}
+
+subgraph cluster_outputs {
+label="";
+pencolor=transparent;
+penwidth=2;
+cluster_outputs_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster_output {
+bgcolor="#FFE6CC";
+label=output;
+pencolor="#D79B00";
+penwidth=2;
+cluster_output_connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+subgraph cluster__level0_ {
+bgcolor=transparent;
+label="";
+pencolor=transparent;
+penwidth=2;
+cluster__level0__connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster__level0_benchmark [color="#82B366", fillcolor="#D5E8D4", label=benchmark, style=filled];
+}
+
+subgraph cluster__level1_ {
+bgcolor=transparent;
+label="";
+pencolor=transparent;
+penwidth=2;
+cluster__level1__connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster__level1_gen_init_cpio [color="#6C8EBF", fillcolor="#DAE8FC", label=gen_init_cpio, style=filled];
+cluster__level1_initramfs_base [color="#6C8EBF", fillcolor="#DAE8FC", label=initramfs_base, style=filled];
+cluster__level1_busybox [color="#6C8EBF", fillcolor="#DAE8FC", label=busybox, style=filled];
+cluster__level1_before_workload [color="#6C8EBF", fillcolor="#DAE8FC", label=before_workload, style=filled];
+cluster__level1_nemu_trap [color="#6C8EBF", fillcolor="#DAE8FC", label=nemu_trap, style=filled];
+cluster__level1_qemu_trap [color="#6C8EBF", fillcolor="#DAE8FC", label=qemu_trap, style=filled];
+cluster__level1_initramfs_overlays [color="#6C8EBF", fillcolor="#DAE8FC", label=initramfs_overlays, style=filled];
+cluster__level1_initramfs [color="#6C8EBF", fillcolor="#DAE8FC", label=initramfs, style=filled];
+}
+
+cluster__level0__connect_node_ -> cluster__level1__connect_node_  [color=transparent, lhead=cluster__level1_, ltail=cluster__level0_, penwidth=2];
+subgraph cluster__level2_ {
+bgcolor=transparent;
+label="";
+pencolor=transparent;
+penwidth=2;
+cluster__level2__connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster__level2_linux [color="#6C8EBF", fillcolor="#DAE8FC", label=linux, style=filled];
+cluster__level2_dts [color="#6C8EBF", fillcolor="#DAE8FC", label=dts, style=filled];
+cluster__level2_opensbi [color="#6C8EBF", fillcolor="#DAE8FC", label=opensbi, style=filled];
+cluster__level2_gcpt [color="#6C8EBF", fillcolor="#DAE8FC", label=gcpt, style=filled];
+cluster__level2_img [color="#666666", fillcolor="#CCE5FF", label=img, style=filled];
+}
+
+cluster__level1__connect_node_ -> cluster__level2__connect_node_  [color=transparent, lhead=cluster__level2_, ltail=cluster__level1_, penwidth=2];
+subgraph cluster__level3_ {
+bgcolor=transparent;
+label="";
+pencolor=transparent;
+penwidth=2;
+cluster__level3__connect_node_ [height=0, label="", margin=0, shape=none, width=0];
+cluster__level3_nemu [color="#B85450", fillcolor="#F8CECC", label=nemu, style=filled];
+cluster__level3_qemu [color="#B85450", fillcolor="#F8CECC", label=qemu, style=filled];
+cluster__level3_simpoint [color="#B85450", fillcolor="#F8CECC", label=simpoint, style=filled];
+"cluster__level3_stage1-profiling" [color="#B85450", fillcolor="#F8CECC", label="stage1-profiling", style=filled];
+"cluster__level3_stage2-cluster" [color="#B85450", fillcolor="#F8CECC", label="stage2-cluster", style=filled];
+"cluster__level3_stage3-checkpoint" [color="#B85450", fillcolor="#F8CECC", label="stage3-checkpoint", style=filled];
+"cluster__level3_cpts-simpoint" [color="#B85450", fillcolor="#F8CECC", label="cpts-simpoint", style=filled];
+"cluster__level3_stage3-checkpoint" -> "cluster__level3_cpts-simpoint"  [color="#B85450:transparent:#B85450", constraint=False, dir=none];
+}
+
+cluster__level2__connect_node_ -> cluster__level3__connect_node_  [color=transparent, lhead=cluster__level3_, ltail=cluster__level2_, penwidth=2];
+}
+
+cluster_outputsoverrideScope [color=black, fontsize=20, label=overrideScope, penwidth=2, shape=oval];
+cluster_outputsoverrideScope -> cluster_output_connect_node_  [color=black, constraint=False, lhead=cluster_output, penwidth=2];
+cluster__level2_dts -> cluster_outputsoverrideScope  [color=transparent];
+cluster_outputsoverride [color=black, label=override, shape=oval];
+cluster_outputsoverride -> cluster__level1_before_workload  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level0_benchmark  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level1_busybox  [color="#00000022", constraint=False];
+cluster_outputsoverride -> "cluster__level3_cpts-simpoint"  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level2_dts  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level2_gcpt  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level1_gen_init_cpio  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level2_img  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level1_initramfs  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level1_initramfs_base  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level1_initramfs_overlays  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level2_linux  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level3_nemu  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level1_nemu_trap  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level2_opensbi  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level3_qemu  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level1_qemu_trap  [color="#00000022", constraint=False];
+cluster_outputsoverride -> cluster__level3_simpoint  [color="#00000022", constraint=False];
+cluster_outputsoverride -> "cluster__level3_stage1-profiling"  [color="#00000022", constraint=False];
+cluster_outputsoverride -> "cluster__level3_stage2-cluster"  [color="#00000022", constraint=False];
+cluster_outputsoverride -> "cluster__level3_stage3-checkpoint"  [color="#00000022", constraint=False];
+}
+
+cluster_inputsbenchmark -> cluster_overlaysrun_sh  [color="#82B366"];
+cluster_inputsbenchmark -> cluster_initramfs_connect_node_  [color="#82B366", lhead=cluster_initramfs];
+"cluster_cptBuilderstage3-checkpoint" -> cluster_output_connect_node_  [lhead=cluster_output];
+cluster_inputsbenchmark -> cluster__level0_benchmark  [color="#82B36611", dir=none];
+cluster_basegen_init_cpio -> cluster__level1_gen_init_cpio  [color="#00000011", dir=none];
+cluster_base_connect_node_ -> cluster__level1_initramfs_base  [color="#00000011", dir=none, ltail=cluster_base, penwidth=2];
+cluster_overlaysbusybox -> cluster__level1_busybox  [color="#00000011", dir=none];
+cluster_overlaysbefore_workload -> cluster__level1_before_workload  [color="#00000011", dir=none];
+cluster_overlaysnemu_trap -> cluster__level1_nemu_trap  [color="#00000011", dir=none];
+cluster_overlaysqemu_trap -> cluster__level1_qemu_trap  [color="#00000011", dir=none];
+cluster_overlays_connect_node_ -> cluster__level1_initramfs_overlays  [color="#00000011", dir=none, ltail=cluster_overlays, penwidth=2];
+cluster_initramfs_connect_node_ -> cluster__level1_initramfs  [color="#00000011", dir=none, ltail=cluster_initramfs, penwidth=2];
+cluster_linux_connect_node_ -> cluster__level2_linux  [color="#00000011", dir=none, ltail=cluster_linux, penwidth=2];
+cluster_opensbidts -> cluster__level2_dts  [color="#00000011", dir=none];
+cluster_opensbi_connect_node_ -> cluster__level2_opensbi  [color="#00000011", dir=none, ltail=cluster_opensbi, penwidth=2];
+cluster_gcpt_connect_node_ -> cluster__level2_gcpt  [color="#6C8EBF11", dir=none, ltail=cluster_gcpt, penwidth=3];
+cluster_imgBuilder_connect_node_ -> cluster__level2_img  [color="#66666611", dir=none, ltail=cluster_imgBuilder, penwidth=2];
+cluster_cptBuildernemu -> cluster__level3_nemu  [color="#00000011", dir=none];
+cluster_cptBuilderqemu -> cluster__level3_qemu  [color="#00000011", dir=none];
+cluster_cptBuildersimpoint -> cluster__level3_simpoint  [color="#00000011", dir=none];
+"cluster_cptBuilderstage1-profiling" -> "cluster__level3_stage1-profiling"  [color="#00000011", dir=none];
+"cluster_cptBuilderstage2-cluster" -> "cluster__level3_stage2-cluster"  [color="#00000011", dir=none];
+"cluster_cptBuilderstage3-checkpoint" -> "cluster__level3_stage3-checkpoint"  [color="#00000011", dir=none];
+"cluster_cptBuilderstage3-checkpoint" -> "cluster__level3_cpts-simpoint"  [color="#00000011", dir=none];
+cluster_imgBuilder_connect_node_ -> cluster_cptBuilderqemu  [color=transparent, ltail=cluster_imgBuilder, penwidth=2];
+"cluster_cptBuilderstage3-checkpoint" -> cluster__level0_benchmark  [color=transparent];
+"cluster_cptBuilderstage3-checkpoint" -> cluster__level0_benchmark  [color=transparent];
+"cluster_cptBuilderstage3-checkpoint" -> cluster__level0_benchmark  [color=transparent];
+"cluster_cptBuilderstage3-checkpoint" -> cluster__level0_benchmark  [color=transparent];
+"cluster_cptBuilderstage3-checkpoint" -> cluster__level0_benchmark  [color=transparent];
+}
